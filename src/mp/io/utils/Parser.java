@@ -115,83 +115,89 @@ public class Parser {
 	public static HashMap<String, WikiLink> getILLs(String pageData, boolean applyFilter) {
 		HashMap<String, WikiLink> result = new HashMap<String, WikiLink>();
 		
-		String data = Parser.getContents(pageData, textBeginTag, textEndTag).get(0);//Page contains only "<text>" element
-		//Extract all ILLs here
-		String[] patternStandard = new String[] {"(\\[\\[\\s*..\\s*:)(.*)(\\]\\])", "]]"};
-		String[] patternFeatured = new String[] {"(\\{\\{)(Link)(\\s*)(..)", "}}"};
-		//String[] patternGood = new String[] { "(\\{\\{)(Link)(\\s*)(GA)", "}}"};
+		List<String> textFragments = Parser.getContents(pageData, textBeginTag, textEndTag);//Page contains only "<text>" element
 		
-		List<String[]> regexPatterns = new ArrayList<String[]>();
-		regexPatterns.add(patternStandard);
-		regexPatterns.add(patternFeatured);
-		//regexPatterns.add(patternGood);
-		
-		for (int i=0;i<regexPatterns.size();i++) {
-			Pattern pattern = Pattern.compile(regexPatterns.get(i)[0]);
-			Matcher matcher = pattern.matcher(data);
+		if (textFragments.size()>0) {
+			String data = textFragments.get(0);
 			
-			int matchPos = 0;
-			boolean isMatch = false;
-			do {
-				WikiLink link = new WikiLink();
-				if (matcher.find(matchPos)) {
-					isMatch = true;
-					matchPos = matcher.start();
-					if (matchPos!=0) {
-						int illEnd = data.indexOf(regexPatterns.get(i)[1], matchPos);//finding the end of the ILL
-						if (illEnd!=-1) {
-							String illString = data.substring(matchPos, illEnd);
-							illString = illString.substring(2,illString.length());
-							if (i==0) {//Parsing standard pattern
-								String[] ILLComponents = illString.split(":");
-								if (ILLComponents.length<3) { //Filter the links that matched the template by mistake
-									boolean isClean = true;
-									if (applyFilter) {//Cut off codes like "WP" which match the pattern occasionally
-										isClean = checkForbiddenLangCode(ILLComponents[0]);
+			//Extract all ILLs here
+			String[] patternStandard = new String[] {"(\\[\\[\\s*..\\s*:)(.*)(\\]\\])", "]]"};
+			String[] patternFeatured = new String[] {"(\\{\\{)(Link)(\\s*)(..)", "}}"};
+			//String[] patternGood = new String[] { "(\\{\\{)(Link)(\\s*)(GA)", "}}"};
+			
+			List<String[]> regexPatterns = new ArrayList<String[]>();
+			regexPatterns.add(patternStandard);
+			regexPatterns.add(patternFeatured);
+			//regexPatterns.add(patternGood);
+			
+			for (int i=0;i<regexPatterns.size();i++) {
+				Pattern pattern = Pattern.compile(regexPatterns.get(i)[0]);
+				Matcher matcher = pattern.matcher(data);
+				
+				int matchPos = 0;
+				boolean isMatch = false;
+				do {
+					WikiLink link = new WikiLink();
+					if (matcher.find(matchPos)) {
+						isMatch = true;
+						matchPos = matcher.start();
+						if (matchPos!=0) {
+							int illEnd = data.indexOf(regexPatterns.get(i)[1], matchPos);//finding the end of the ILL
+							if (illEnd!=-1) {
+								String illString = data.substring(matchPos, illEnd);
+								illString = illString.substring(2,illString.length());
+								if (i==0) {//Parsing standard pattern
+									String[] ILLComponents = illString.split(":");
+									if (ILLComponents.length<3 && ILLComponents.length>1) { //Filter the links that matched the template by mistake, 
+																							//or "incomplete" links like "ar:"
+										boolean isClean = true;
+										if (applyFilter) {//Cut off codes like "WP" which match the pattern occasionally
+											isClean = checkForbiddenLangCode(ILLComponents[0]);
+										}
+										if (isClean) {
+											link.setInitialized(true);
+											link.setLangCode(ILLComponents[0].trim());
+											link.setSameAsPageTitle(ILLComponents[1].trim());
+											ILLComponents = ILLComponents[1].split("#");
+											if (ILLComponents.length>1) {
+												link.setSubCategory(ILLComponents[1].trim());
+											}	
+										}
+									}															
+								} else {//Additional patterns
+									String[] ILLComponents = illString.split("\\|");
+									if (ILLComponents[0].contains("FA")) {//Featured article
+										link.setHasSpecialMark(true);
+										link.setFeatured(true);
+										link.setFeaturedLangCode(ILLComponents[1].trim());
 									}
-									if (isClean) {
-										link.setInitialized(true);
-										link.setLangCode(ILLComponents[0].trim());
-										link.setSameAsPageTitle(ILLComponents[1].trim());
-										ILLComponents = ILLComponents[1].split("#");
-										if (ILLComponents.length>1) {
-											link.setSubCategory(ILLComponents[1].trim());
-										}	
+									if (ILLComponents[0].contains("GA")) {//Featured article
+										link.setHasSpecialMark(true);
+										link.setGood(true);
+										link.setGoodLangCode(ILLComponents[1].trim());
 									}
-								}															
-							} else {//Additional patterns
-								String[] ILLComponents = illString.split("\\|");
-								if (ILLComponents[0].contains("FA")) {//Featured article
-									link.setHasSpecialMark(true);
-									link.setFeatured(true);
-									link.setFeaturedLangCode(ILLComponents[1].trim());
-								}
-								if (ILLComponents[0].contains("GA")) {//Featured article
-									link.setHasSpecialMark(true);
-									link.setGood(true);
-									link.setGoodLangCode(ILLComponents[1].trim());
-								}
-							}						
-							matchPos = illEnd;
-							if (link.isInitialized()) {
-								result.put(link.getSameAsPageTitle(), link);
-							} else {
-								if (link.isHasSpecialMark()) {
-									String name = "";
-									name += link.getSameAsPageTitle();
-									if (link.isGood())
-										name += "#GA";
-									if (link.isFeatured())
-										name += "#FA";
-									result.put(name, link);
+								}						
+								matchPos = illEnd;
+								if (link.isInitialized()) {
+									result.put(link.getSameAsPageTitle(), link);
+								} else {
+									if (link.isHasSpecialMark()) {
+										String name = "";
+										name += link.getSameAsPageTitle();
+										if (link.isGood())
+											name += "#GA";
+										if (link.isFeatured())
+											name += "#FA";
+										result.put(name, link);
+									}
 								}
 							}
-						}
-					}					
-				} else {
-					isMatch = false;
-				}
-			} while (matchPos>0 && matchPos <= data.length() && isMatch);
+						}					
+					} else {
+						isMatch = false;
+					}
+				} while (matchPos>0 && matchPos <= data.length() && isMatch);
+			}
 		}
 		
 		return result;

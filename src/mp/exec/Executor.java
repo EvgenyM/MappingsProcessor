@@ -20,11 +20,11 @@ import mp.io.WikiDataExtractor;
 
 public class Executor {
 	
-	public static final String path = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/enwiki_20140502_pages_articles1.xml";//"D:/1M Mannheim/Master Thesis/WikiData/frwiki/frwiki-20140521-pages-articles1.xml";//
-	public static final String dumpPath = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/stats.csv";
+	public static final String path = "G:/WikiDumps/unzipped/en/enwiki-20140614-pages-articles26/enwiki_articles26.xml";//"D:/1M Mannheim/Master Thesis/WikiData/enwiki/enwiki_20140502_pages_articles1.xml";//"D:/1M Mannheim/Master Thesis/WikiData/frwiki/frwiki-20140521-pages-articles1.xml";//
+	public static final String dumpPath = "G:/WikiMappingsOutput/stats.csv";
 
-	public static final String dumpJson = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/PagesAsJson.txt";
-	public static final String StatsJson = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/Stats.csv";
+	public static final String dumpJson = "G:/WikiMappingsOutput/PagesAsJson.txt";
+	public static final String StatsJson = "G:/WikiMappingsOutput/Stats.csv";
 	
 	public static HashMap<String, WikiPage> wikiData = new HashMap<String, WikiPage>();
 	
