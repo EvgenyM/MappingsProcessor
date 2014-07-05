@@ -104,6 +104,9 @@ public class WikiDataExtractor {
 			result.putAll(pagesPerIteration);
 			
 			if (GlobalVariables.IS_DEBUG) {
+				if (readingIterationsPassed == 103) {
+					System.out.println("ffff");
+				}
 				System.out.println("Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed." );
 			}
 			readingIterationsPassed ++;

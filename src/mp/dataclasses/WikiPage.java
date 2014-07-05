@@ -23,19 +23,19 @@ public class WikiPage {
 		this.ILLs = new HashMap<String, WikiLink>();
 	}
 	
-	Infobox getInfobox() {
+	public Infobox getInfobox() {
 		return infobox;
 	}
 	
-	void setInfobox(Infobox infobox) {
+	public void setInfobox(Infobox infobox) {
 		this.infobox = infobox;
 	}
 	
-	HashMap<String, WikiLink> getILLs() {
+	public HashMap<String, WikiLink> getILLs() {
 		return ILLs;
 	}
 	
-	void setILLs(HashMap<String, WikiLink> iLLs) {
+	public void setILLs(HashMap<String, WikiLink> iLLs) {
 		ILLs = iLLs;
 	}
 

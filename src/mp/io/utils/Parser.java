@@ -166,15 +166,17 @@ public class Parser {
 									}															
 								} else {//Additional patterns
 									String[] ILLComponents = illString.split("\\|");
-									if (ILLComponents[0].contains("FA")) {//Featured article
-										link.setHasSpecialMark(true);
-										link.setFeatured(true);
-										link.setFeaturedLangCode(ILLComponents[1].trim());
-									}
-									if (ILLComponents[0].contains("GA")) {//Featured article
-										link.setHasSpecialMark(true);
-										link.setGood(true);
-										link.setGoodLangCode(ILLComponents[1].trim());
+									if (ILLComponents.length>1) {
+										if (ILLComponents[0].contains("FA")) {//Featured article
+											link.setHasSpecialMark(true);
+											link.setFeatured(true);
+											link.setFeaturedLangCode(ILLComponents[1].trim());
+										}
+										if (ILLComponents[0].contains("GA")) {//Featured article
+											link.setHasSpecialMark(true);
+											link.setGood(true);
+											link.setGoodLangCode(ILLComponents[1].trim());
+										}
 									}
 								}						
 								matchPos = illEnd;
