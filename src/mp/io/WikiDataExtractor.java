@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,7 +38,8 @@ import org.xml.sax.SAXException;
  */
 public class WikiDataExtractor {
 	
-	public static final String dumpPath = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/chunks.txt";
+	public static final int GC_ITERATIONS = 10;
+	public static final String logPath = "G:/WikiMappingsOutput/log.txt";
 	
 	@SuppressWarnings("unused")
 	private static final String pageBeginTag = "<page";
@@ -77,6 +79,7 @@ public class WikiDataExtractor {
 		long bytesTotal = 0;
 		long len = 0;
 		
+		int GCIters = 0;
 		while((len = fc.read(bb)) != -1) {
 			bytesTotal +=len;
 			bb.flip();
@@ -104,10 +107,23 @@ public class WikiDataExtractor {
 			result.putAll(pagesPerIteration);
 			
 			if (GlobalVariables.IS_DEBUG) {
-				System.out.println("Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed." );
+				java.util.Date date= new java.util.Date();
+				String strOut = "Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed. "+new Timestamp(date.getTime());
+				
+				System.out.println(strOut);
+				if (readingIterationsPassed>0)
+					log(strOut, true);
+				else
+					log(strOut, false);
 			}
 			readingIterationsPassed ++;
-			System.gc();
+			GCIters++;
+			
+			if (GCIters>=GC_ITERATIONS) {
+				System.gc();
+				log("GC", true);
+				GCIters = 0;
+			}
 		}
 		
 		fc.close();
@@ -128,6 +144,10 @@ public class WikiDataExtractor {
 		String wikiDataAsString = new String(wikiData, "UTF-8");
 		wikiData = null;
 		return wikiDataAsString;
+	}
+	
+	private void log(String str, boolean append) {
+		FileIO.writeToFile(logPath, str, append);
 	}
 
 	public String getPath() {
