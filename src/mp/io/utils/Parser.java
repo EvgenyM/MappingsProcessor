@@ -6,10 +6,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.DebugGraphics;
+
 import mp.dataclasses.Infobox;
 import mp.dataclasses.InfoboxAttribute;
 import mp.dataclasses.LanguageCodes;
 import mp.dataclasses.WikiLink;
+import mp.global.GlobalVariables;
 import mp.io.dataclasses.InfoboxExtractionObject;
 
 /**
@@ -287,57 +290,69 @@ public class Parser {
 		String[] arr = infoboxAsString.split("\n");
 		String infoboxClass = "";
 		HashMap<String, InfoboxAttribute> attributes = new HashMap<String, InfoboxAttribute>();
-		for (int i=0;i<arr.length;i++) {
-			if (i==0) {
-				//Getting the class name of the infobox
-				String[] nameData = arr[i].split(" ");	
-				//Composing the name
-				if (nameData.length>1) {
-					for (int j=1;j<nameData.length;j++) {
-						String part = filter(nameData[j]);//Filtering out wrong parts and characters
-						if (part.length()>0)						
-							infoboxClass += part+" ";
-					}					
-				}
-			} else {
-				//Getting the attributes
-				String[] arrAtt = arr[i].split("=");
-				String attrName = arrAtt[0].replaceAll("\\|", " ").trim();
-				if (!attrName.equals("") || !mIgnoreUnnamedAttributes) {//If one should ignore the infoboxes with no attribute name
-					String attrValue = "";
-					if (arrAtt.length>1)
-						attrValue = arrAtt[1].trim();
-					else {
-						//Look it up, could be a list
-						//TODO parse the lists
-						boolean nextAttributeFound = false;
-						int cntr = 0;
-						while ((!nextAttributeFound) && (i+cntr<arr.length)) {
-							String line = arr[i+cntr].trim();
-							if (!line.startsWith("|")) {
-								attrValue +=line+"\n";
-								cntr++;
-							} else {
-								nextAttributeFound = true;
+		try {
+			for (int i=0;i<arr.length;i++) {
+				if (i==0) {
+					//Getting the class name of the infobox
+					String[] nameData = arr[i].split(" ");	
+					//Composing the name
+					if (nameData.length>1) {
+						for (int j=1;j<nameData.length;j++) {
+							String part = filter(nameData[j]);//Filtering out wrong parts and characters
+							if (part.length()>0)						
+								infoboxClass += part+" ";
+						}					
+					}
+				} else {
+					//Getting the attributes
+					String[] arrAtt = arr[i].split("=");
+					if (arrAtt.length>0) {
+						String attrName = arrAtt[0].replaceAll("\\|", " ").trim();
+						if (!attrName.equals("") || !mIgnoreUnnamedAttributes) {//If one should ignore the infoboxes with no attribute name
+							String attrValue = "";
+							if (arrAtt.length>1)
+								attrValue = arrAtt[1].trim();
+							else {
+								//Look it up, could be a list
+								//TODO parse the lists
+								boolean nextAttributeFound = false;
+								int cntr = 0;
+								while ((!nextAttributeFound) && (i+cntr<arr.length)) {
+									String line = arr[i+cntr].trim();
+									if (!line.startsWith("|")) {
+										attrValue +=line+"\n";
+										cntr++;
+									} else {
+										nextAttributeFound = true;
+									}
+								}
+								i+=cntr;
 							}
+							
+							if (infoboxClass.equals("") && attrName.contains("title")) {
+								infoboxClass = attrValue;
+							}
+							
+							if (mToLowerCase)
+								attrName.toLowerCase();
+							InfoboxAttribute attribute = new InfoboxAttribute(attrName, attrValue.trim());
+							attributes.put(attribute.getName(), attribute);
 						}
-						i+=cntr;
 					}
-					
-					if (infoboxClass.equals("") && attrName.contains("title")) {
-						infoboxClass = attrValue;
-					}
-					
-					if (mToLowerCase)
-						attrName.toLowerCase();
-					InfoboxAttribute attribute = new InfoboxAttribute(attrName, attrValue.trim());
-					attributes.put(attribute.getName(), attribute);
-				} 
+				}
+			}
+			
+			if (mToLowerCase)
+				infoboxClass = infoboxClass.toLowerCase();
+			
+			infoboxClass = infoboxClass.trim();
+		} catch (Exception ex) {
+			if (GlobalVariables.IS_DEBUG){
+				ex.printStackTrace();
 			}
 		}
-		if (mToLowerCase)
-			infoboxClass = infoboxClass.toLowerCase();
-		return new Infobox(infoboxClass.trim(), attributes);
+		
+		return new Infobox(infoboxClass, attributes);
 	}
 	
 	private static String filter(String src) {

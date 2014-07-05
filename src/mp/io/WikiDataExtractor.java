@@ -107,6 +107,7 @@ public class WikiDataExtractor {
 				System.out.println("Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed." );
 			}
 			readingIterationsPassed ++;
+			System.gc();
 		}
 		
 		fc.close();
