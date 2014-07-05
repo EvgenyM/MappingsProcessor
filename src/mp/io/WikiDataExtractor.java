@@ -80,7 +80,7 @@ public class WikiDataExtractor {
 		long bytesTotal = 0;
 		long len = 0;
 		
-		int GCIters = 0;
+		//int GCIters = 0;
 		while((len = fc.read(bb)) != -1) {
 			bytesTotal +=len;
 			bb.flip();
@@ -111,11 +111,31 @@ public class WikiDataExtractor {
 			
 			result.putAll(pagesPerIteration);
 			
-			pagesPerIteration = null;
+			
 			
 			if (GlobalVariables.IS_DEBUG) {
 				java.util.Date date= new java.util.Date();
-				String strOut = "Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed. " + new Timestamp(date.getTime());
+				int infoboxedRetr = 0;
+				int attrsRetr = 0;
+				int attrsNormal = 0;
+				for (WikiPage pg:pagesPerIteration.values()) {
+					if (pg.getInfobox()!=null) {
+						infoboxedRetr++;
+						if (pg.getInfobox().getAttributes()!= null) {
+							if (pg.getInfobox().getAttributes().size()>0) {
+								for (InfoboxAttribute att:pg.getInfobox().getAttributes().values()) {
+									if (!att.equals(null)) {
+										attrsRetr++;
+										if (!att.getName().equals("") && !att.getValue().equals("")) {
+											attrsNormal++;
+										}
+									}
+								}
+							}
+						}						
+					}
+				}
+				String strOut = "Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed. " + "Infoboxes:" + infoboxedRetr+". Attributes:"+attrsRetr+". AttrNormal:"+attrsNormal+". " +new Timestamp(date.getTime());
 				
 				System.out.println(strOut);
 				if (readingIterationsPassed>0)
@@ -123,6 +143,7 @@ public class WikiDataExtractor {
 				else
 					log(strOut+"\n", false);
 			}
+			pagesPerIteration = null;
 			readingIterationsPassed ++;
 			//GCIters++;
 			
