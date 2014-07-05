@@ -36,6 +36,7 @@ public class Converter {
 			WikiPage page = getWikiPage(str, ignoreUnnamedAttributes, isNamesToLowerCase);
 			pagesRetrieved.put(page.getPageTitle(), page);
 		}
+		pageAsString = null;
 		return pagesRetrieved;
 	}
 	
@@ -78,6 +79,13 @@ public class Converter {
 		
 		WikiPage page = new WikiPage(box, ILLSet);	
 		page.setPageTitle(pageTitle);
+
+		extractedChunk = null;
+		pageData = null;
+		ILLSet = null;
+		pageTitle = null;
+		box = null;
+		
 		return page;
 	}
 }

@@ -22,6 +22,10 @@ import mp.io.dataclasses.InfoboxExtractionObject;
  */
 public class Parser {
 	
+	private static final int ILL_SET_INITIAL_CAPACITY = 4;
+	private static final int INFOBOX_SET_INITIAL_CAPACITY = 2;
+	private static final int ATTRIBUTE_SET_INITIAL_CAPACITY = 10;
+	
 	private static final String textBeginTag = "<text";
 	private static final String textEndTag = "</text>";
 	
@@ -47,18 +51,18 @@ public class Parser {
 	 * @param withHeader Whether a header template should be appended
 	 */
 	public static String completeChunk(String chunk, boolean withHeader) {
-		String res = chunk;
-		String header = "<mediawiki xmlns=\"http://www.mediawiki.org/xml/export-0.8/\""+
-		" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""+
-		" xsi:schemaLocation=\"http://www.mediawiki.org/xml/export-0.8/ http://www.mediawiki.org/xml/export-0.8.xsd\""+
-		" version=\"0.8\" xml:lang=\"en\">";
-		String footer = "</mediawiki>";
+		StringBuilder builder = new StringBuilder();
 		
-		res += footer;
-		if (withHeader)
-			res = header + res;
-		
-		return res;
+		if (withHeader) {
+			builder.append("<mediawiki xmlns=\"http://www.mediawiki.org/xml/export-0.8/\"");
+			builder.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+			builder.append(" xsi:schemaLocation=\"http://www.mediawiki.org/xml/export-0.8/ http://www.mediawiki.org/xml/export-0.8.xsd\"");
+			builder.append(" version=\"0.8\" xml:lang=\"en\">");
+		}
+		builder.append(chunk);
+		builder.append("</mediawiki>");
+	
+		return builder.toString();
 	}
 	
 	/**
@@ -106,6 +110,7 @@ public class Parser {
 				//System.out.println(indexOfBeginning);
 			}				
 		} while (indexOfBeginning < filelength && !chunkEndExceeded);
+		data = null;
 		return result;
 	}
 	
@@ -116,22 +121,21 @@ public class Parser {
 	 * @return
 	 */
 	public static HashMap<String, WikiLink> getILLs(String pageData, boolean applyFilter) {
-		HashMap<String, WikiLink> result = new HashMap<String, WikiLink>();
+		HashMap<String, WikiLink> result = new HashMap<String, WikiLink>(ILL_SET_INITIAL_CAPACITY);
 		
 		List<String> textFragments = Parser.getContents(pageData, textBeginTag, textEndTag);//Page contains only "<text>" element
 		
 		if (textFragments.size()>0) {
 			String data = textFragments.get(0);
+			textFragments = null;
 			
 			//Extract all ILLs here
 			String[] patternStandard = new String[] {"(\\[\\[\\s*..\\s*:)(.*)(\\]\\])", "]]"};
 			String[] patternFeatured = new String[] {"(\\{\\{)(Link)(\\s*)(..)", "}}"};
-			//String[] patternGood = new String[] { "(\\{\\{)(Link)(\\s*)(GA)", "}}"};
 			
 			List<String[]> regexPatterns = new ArrayList<String[]>();
 			regexPatterns.add(patternStandard);
 			regexPatterns.add(patternFeatured);
-			//regexPatterns.add(patternGood);
 			
 			for (int i=0;i<regexPatterns.size();i++) {
 				Pattern pattern = Pattern.compile(regexPatterns.get(i)[0]);
@@ -187,13 +191,14 @@ public class Parser {
 									result.put(link.getSameAsPageTitle(), link);
 								} else {
 									if (link.isHasSpecialMark()) {
-										String name = "";
-										name += link.getSameAsPageTitle();
+										StringBuilder nameBuilder = new StringBuilder();
+										nameBuilder.append(link.getSameAsPageTitle());
+										
 										if (link.isGood())
-											name += "#GA";
+											nameBuilder.append("#GA");
 										if (link.isFeatured())
-											name += "#FA";
-										result.put(name, link);
+											nameBuilder.append("#FA");
+										result.put(nameBuilder.toString(), link);
 									}
 								}
 							} else {
@@ -202,9 +207,13 @@ public class Parser {
 						}					
 					} else {
 						isMatch = false;
-					}
+					}					
+					link = null;
 				} while (matchPos>0 && matchPos <= data.length() && isMatch);
+				matcher = null;
+				pattern = null;
 			}
+			regexPatterns = null;
 		}
 		
 		return result;
@@ -228,6 +237,7 @@ public class Parser {
 	
 	/**
 	 * Extracts infoboxes from a given dataset. Capable of processing medium-sized (up to 200Mb) chunks
+	 * Trackings of last begin position and remaining chunks are removed.
 	 * @param wikiDataAsString Chunk of the wikidata
 	 * @param ignoreUnnamedAttributes Whether unnamed attributes should be ignored
 	 * @param isNamesToLowerCase Whether attribute names should be translated to lower case
@@ -235,19 +245,19 @@ public class Parser {
 	 */
 	public static InfoboxExtractionObject extractInfboxesFromUnstructuredText(String wikiDataAsString, boolean ignoreUnnamedAttributes, boolean isNamesToLowerCase) {
 		//Parse the wikidata, extract infoboxes
-		HashMap<String, Infobox> infoboxesRetrieved = new HashMap<String, Infobox>();
+		HashMap<String, Infobox> infoboxesRetrieved = new HashMap<String, Infobox>(INFOBOX_SET_INITIAL_CAPACITY);
 		int indexOfBeginning = 0;
 		int filelength = wikiDataAsString.length();
 		
-		String remainderString = "";
-		int lastBeginPosition = 0;
+		//String remainderString = "";
+		//int lastBeginPosition = 0;
 		//Parsing the chunk
 		boolean fileEndExceeded = false;
 		do {
 			int initialPosition = wikiDataAsString.indexOf(INFOBOX_BEGINNING, indexOfBeginning) + DOUBLE_OPEN.length();
 			if (initialPosition==1 || initialPosition==-1) {
 				fileEndExceeded = true;
-				remainderString = wikiDataAsString.substring(lastBeginPosition, filelength);
+				//remainderString = wikiDataAsString.substring(lastBeginPosition, filelength);
 				break;
 			}
 			int endPosition = initialPosition;
@@ -263,7 +273,7 @@ public class Parser {
 				
 				if (endPosition>=filelength-2) {
 					fileEndExceeded = true;
-					remainderString = wikiDataAsString.substring(lastBeginPosition, filelength);
+					//remainderString = wikiDataAsString.substring(lastBeginPosition, filelength);
 					break;
 				}
 			}
@@ -274,11 +284,11 @@ public class Parser {
 				if (box!=null)
 					infoboxesRetrieved.put(box.getID(), box);
 				indexOfBeginning = endPosition+1;
-				lastBeginPosition = endPosition+1;
+				//lastBeginPosition = endPosition+1;
 			}				
 		} while (indexOfBeginning < filelength && !fileEndExceeded);
 		
-		return new InfoboxExtractionObject(infoboxesRetrieved, remainderString, lastBeginPosition);
+		return new InfoboxExtractionObject(infoboxesRetrieved, "", 0);
 	}
 	
 	/**
@@ -289,7 +299,7 @@ public class Parser {
 	private static Infobox getInfoBox(String infoboxAsString, boolean mIgnoreUnnamedAttributes, boolean mToLowerCase) {
 		String[] arr = infoboxAsString.split("\n");
 		String infoboxClass = "";
-		HashMap<String, InfoboxAttribute> attributes = new HashMap<String, InfoboxAttribute>();
+		HashMap<String, InfoboxAttribute> attributes = new HashMap<String, InfoboxAttribute>(ATTRIBUTE_SET_INITIAL_CAPACITY);
 		try {
 			for (int i=0;i<arr.length;i++) {
 				if (i==0) {

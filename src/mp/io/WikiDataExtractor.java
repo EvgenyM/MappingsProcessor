@@ -39,6 +39,7 @@ import org.xml.sax.SAXException;
 public class WikiDataExtractor {
 	
 	public static final int GC_ITERATIONS = 10;
+	private static final int PAGE_SET_INITIAL_CAPACITY = 5000;
 	public static final String logPath = "G:/WikiMappingsOutput/log.txt";
 	
 	@SuppressWarnings("unused")
@@ -67,7 +68,7 @@ public class WikiDataExtractor {
 	 * @throws ParserConfigurationException 
 	 */
 	public HashMap<String, WikiPage> readWikidata() throws IOException, FileTooLargeException, ParserConfigurationException, SAXException  {
-		HashMap<String, WikiPage> result = new HashMap<String, WikiPage>();
+		HashMap<String, WikiPage> result = new HashMap<String, WikiPage>(PAGE_SET_INITIAL_CAPACITY);
 		
 		FileInputStream fis = new FileInputStream(path);
 		FileChannel fc = fis.getChannel();
@@ -88,8 +89,12 @@ public class WikiDataExtractor {
 			
 			//Adding the last chunk that was not properly processed
 			if (readingIterationsPassed>0) {
-				wikiDataAsString = remainderString + wikiDataAsString;
-				remainderString = "";
+				StringBuilder wikiStr = new StringBuilder();
+				wikiStr.append(remainderString);
+				wikiStr.append(wikiDataAsString);
+				wikiDataAsString = wikiStr.toString();
+				remainderString = null;
+				wikiStr = null;
 			}
 			
 			//Calculate the index of the closing tag of last complete page to be extracted in a chunk
@@ -106,9 +111,11 @@ public class WikiDataExtractor {
 			
 			result.putAll(pagesPerIteration);
 			
+			pagesPerIteration = null;
+			
 			if (GlobalVariables.IS_DEBUG) {
 				java.util.Date date= new java.util.Date();
-				String strOut = "Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed. "+new Timestamp(date.getTime());
+				String strOut = "Iteration "+readingIterationsPassed+" finished. "+ wikiDataAsString.length() +" bytes processed. " + new Timestamp(date.getTime());
 				
 				System.out.println(strOut);
 				if (readingIterationsPassed>0)
@@ -117,13 +124,13 @@ public class WikiDataExtractor {
 					log(strOut+"\n", false);
 			}
 			readingIterationsPassed ++;
-			GCIters++;
+			//GCIters++;
 			
-			if (GCIters>=GC_ITERATIONS) {
+			/*if (GCIters>=GC_ITERATIONS) {
 				System.gc();
 				log("GC\n", true);
 				GCIters = 0;
-			}
+			}*/
 		}
 		
 		fc.close();
