@@ -193,6 +193,8 @@ public class Parser {
 										result.put(name, link);
 									}
 								}
+							} else {
+								matchPos += regexPatterns.get(i)[1].length();
 							}
 						}					
 					} else {
