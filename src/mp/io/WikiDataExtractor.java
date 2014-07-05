@@ -112,16 +112,16 @@ public class WikiDataExtractor {
 				
 				System.out.println(strOut);
 				if (readingIterationsPassed>0)
-					log(strOut, true);
+					log(strOut+"\n", true);
 				else
-					log(strOut, false);
+					log(strOut+"\n", false);
 			}
 			readingIterationsPassed ++;
 			GCIters++;
 			
 			if (GCIters>=GC_ITERATIONS) {
 				System.gc();
-				log("GC", true);
+				log("GC\n", true);
 				GCIters = 0;
 			}
 		}
