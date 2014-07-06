@@ -245,7 +245,7 @@ public class Parser {
 	 */
 	public static InfoboxExtractionObject extractInfboxesFromUnstructuredText(String wikiDataAsString, boolean ignoreUnnamedAttributes, boolean isNamesToLowerCase) {
 		//Parse the wikidata, extract infoboxes
-		HashMap<String, Infobox> infoboxesRetrieved = new HashMap<String, Infobox>(INFOBOX_SET_INITIAL_CAPACITY);
+		List<Infobox> infoboxesRetrieved = new ArrayList<Infobox>(INFOBOX_SET_INITIAL_CAPACITY);
 		int indexOfBeginning = 0;
 		int filelength = wikiDataAsString.length();
 		
@@ -282,7 +282,7 @@ public class Parser {
 				String infoboxAsString = wikiDataAsString.substring(initialPosition, endPosition-DOUBLE_OPEN.length()+1);
 				Infobox box = getInfoBox(infoboxAsString, ignoreUnnamedAttributes, isNamesToLowerCase);
 				if (box!=null)
-					infoboxesRetrieved.put(box.getID(), box);
+					infoboxesRetrieved.add(box);
 				indexOfBeginning = endPosition+1;
 				//lastBeginPosition = endPosition+1;
 			}				
@@ -299,7 +299,7 @@ public class Parser {
 	private static Infobox getInfoBox(String infoboxAsString, boolean mIgnoreUnnamedAttributes, boolean mToLowerCase) {
 		String[] arr = infoboxAsString.split("\n");
 		String infoboxClass = "";
-		HashMap<String, InfoboxAttribute> attributes = new HashMap<String, InfoboxAttribute>(ATTRIBUTE_SET_INITIAL_CAPACITY);
+		List<InfoboxAttribute> attributes = new ArrayList<InfoboxAttribute>(ATTRIBUTE_SET_INITIAL_CAPACITY);
 		try {
 			for (int i=0;i<arr.length;i++) {
 				if (i==0) {
@@ -346,7 +346,7 @@ public class Parser {
 							if (mToLowerCase)
 								attrName.toLowerCase();
 							InfoboxAttribute attribute = new InfoboxAttribute(attrName, attrValue.trim());
-							attributes.put(attribute.getName(), attribute);
+							attributes.add(attribute);
 						}
 					}
 				}

@@ -102,6 +102,7 @@ public class JsonIOManager extends FileIO {
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		Gson gson = new Gson();
 		int cnt = 0;
+		long totalRead = 0;
 		String pageAsString = "";
 		while ((pageAsString = br.readLine()) != null) {
 			try {
@@ -111,7 +112,11 @@ public class JsonIOManager extends FileIO {
 				if (cnt>=READ_BUFFER_CHUNK) {
 					result.putAll(readBuffer);
 					readBuffer.clear();
+					totalRead+=cnt;
 					cnt = 0;
+					if (GlobalVariables.IS_DEBUG) {
+						System.out.println("Lines read: " + totalRead);
+					}
 				}
 			} catch (Exception exxx) {
 				System.out.println("Json parsing error line " + cnt + " line :"+pageAsString);

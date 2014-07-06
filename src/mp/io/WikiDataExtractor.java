@@ -7,23 +7,16 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import mp.dataclasses.Infobox;
 import mp.dataclasses.InfoboxAttribute;
-import mp.dataclasses.LanguageCodes;
-import mp.dataclasses.WikiLink;
 import mp.dataclasses.WikiPage;
 import mp.exceptions.FileTooLargeException;
 import mp.global.GlobalVariables;
-import mp.io.dataclasses.InfoboxExtractionObject;
 import mp.io.utils.Converter;
 import mp.io.utils.Parser;
 
@@ -40,7 +33,7 @@ public class WikiDataExtractor {
 	
 	public static final int GC_ITERATIONS = 10;
 	private static final int PAGE_SET_INITIAL_CAPACITY = 5000;
-	public static final String logPath = "E:/WikiMappingsOutput/log.txt";
+	private static String logPath;
 	
 	@SuppressWarnings("unused")
 	private static final String pageBeginTag = "<page";
@@ -52,8 +45,9 @@ public class WikiDataExtractor {
 	
 	public static final int chunkSize = 1024*1024*10;//100 MBytes
 	
-	public WikiDataExtractor(String path) {
+	public WikiDataExtractor(String path, String logPath) {
 		this.mPath = path;
+		this.setLogPath(logPath);
 		this.ignoreUnnamedAttributes = false;
 		this.setNamesToLowerCase(false);
 	}
@@ -110,8 +104,6 @@ public class WikiDataExtractor {
 			
 			result.putAll(pagesPerIteration);
 			
-			
-			
 			if (GlobalVariables.IS_DEBUG) {
 				java.util.Date date= new java.util.Date();
 				int infoboxedRetr = 0;
@@ -122,7 +114,7 @@ public class WikiDataExtractor {
 						infoboxedRetr++;
 						if (pg.getInfobox().getAttributes()!= null) {
 							if (pg.getInfobox().getAttributes().size()>0) {
-								for (InfoboxAttribute att:pg.getInfobox().getAttributes().values()) {
+								for (InfoboxAttribute att:pg.getInfobox().getAttributes()) {
 									if (!att.equals(null)) {
 										attrsRetr++;
 										if (!att.getName().equals("") && !att.getValue().equals("")) {
@@ -157,6 +149,7 @@ public class WikiDataExtractor {
 		fis.close();
 				
 		if (GlobalVariables.IS_DEBUG) {
+			log("Total " +bytesTotal+ " bytes processed. ("+(double)bytesTotal/(1024*1024*1024)+" GBytes)" +"\n", true);
 			System.out.println("Total " +bytesTotal+ " bytes processed. ("+(double)bytesTotal/(1024*1024*1024)+" GBytes)" );
 		}
 		
@@ -231,7 +224,7 @@ public class WikiDataExtractor {
 						infoboxedRetr++;
 						if (pg.getInfobox().getAttributes()!= null) {
 							if (pg.getInfobox().getAttributes().size()>0) {
-								for (InfoboxAttribute att:pg.getInfobox().getAttributes().values()) {
+								for (InfoboxAttribute att:pg.getInfobox().getAttributes()) {
 									if (!att.equals(null)) {
 										attrsRetr++;
 										if (!att.getName().equals("") && !att.getValue().equals("")) {
@@ -271,7 +264,9 @@ public class WikiDataExtractor {
 				
 		if (GlobalVariables.IS_DEBUG) {
 			System.out.println("Total " +bytesTotal+ " bytes processed. ("+(double)bytesTotal/(1024*1024*1024)+" GBytes)" );
+			log("Total " +bytesTotal+ " bytes processed. ("+(double)bytesTotal/(1024*1024*1024)+" GBytes)"+"\n", true);
 			System.out.println("Reading complete. Infoboxes found: " + infoboxesTotal + ". Attributes total: " + attributesTotal + ". attributesNormalTotal: " + attributesNormalTotal + ".");
+			log("Reading complete. Infoboxes found: " + infoboxesTotal + ". Attributes total: " + attributesTotal + ". attributesNormalTotal: " + attributesNormalTotal + "."+"\n", true);
 		}
 	}
 	
@@ -291,7 +286,7 @@ public class WikiDataExtractor {
 	}
 	
 	private void log(String str, boolean append) {
-		FileIO.writeToFile(logPath, str, append);
+		FileIO.writeToFile(getLogPath(), str, append);
 	}
 
 	public String getPath() {
@@ -316,5 +311,13 @@ public class WikiDataExtractor {
 
 	public void setNamesToLowerCase(boolean namesToLowerCase) {
 		this.namesToLowerCase = namesToLowerCase;
+	}
+
+	public static String getLogPath() {
+		return logPath;
+	}
+
+	public static void setLogPath(String logPath) {
+		WikiDataExtractor.logPath = logPath;
 	}
 }

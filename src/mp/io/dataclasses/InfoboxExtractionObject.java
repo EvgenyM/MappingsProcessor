@@ -1,17 +1,18 @@
 package mp.io.dataclasses;
 
 import java.util.HashMap;
+import java.util.List;
 
 import mp.dataclasses.Infobox;
 
 public class InfoboxExtractionObject {
 	
-	private HashMap<String, Infobox> infoBoxes;
+	private List<Infobox> infoBoxes;
 	private String remainingData;
 	private int lastScanBeginPosition;
 	private boolean isInitialized = false;
 	
-	public InfoboxExtractionObject(HashMap<String, Infobox> infoBoxSet, String remainingData, int lastScanBeginPosition) {
+	public InfoboxExtractionObject(List<Infobox> infoBoxSet, String remainingData, int lastScanBeginPosition) {
 		this.infoBoxes = infoBoxSet;
 		this.remainingData = remainingData;
 		this.lastScanBeginPosition = lastScanBeginPosition;
@@ -30,7 +31,7 @@ public class InfoboxExtractionObject {
 		return lastScanBeginPosition;
 	}
 
-	public HashMap<String, Infobox> getInfoBoxes() {
+	public List<Infobox> getInfoBoxes() {
 		return infoBoxes;
 	}
 }

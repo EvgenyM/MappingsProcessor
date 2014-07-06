@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import mp.dataclasses.Infobox;
+import mp.dataclasses.InfoboxAttribute;
 import mp.dataclasses.WikiLink;
 import mp.dataclasses.WikiPage;
 import mp.global.GlobalVariables;
@@ -34,10 +35,40 @@ public class Converter {
 		List<String> pageAsString = Parser.getContents(wikiDataAsString, pageBeginTag, pageEndTag);
 		for (String str: pageAsString) {
 			WikiPage page = getWikiPage(str, ignoreUnnamedAttributes, isNamesToLowerCase);
-			pagesRetrieved.put(page.getPageTitle(), page);
+			if (isPageConsistent(page)) 
+				pagesRetrieved.put(page.getPageTitle(), page);
 		}
 		pageAsString = null;
 		return pagesRetrieved;
+	}
+	
+	/**
+	 * Checks whether page is consistent and contains at least one ILL, Infobox and at least one attribute.
+	 * @param page
+	 * @return
+	 */
+	private static boolean isPageConsistent(WikiPage page) {
+		boolean isConsistent = false;
+		
+		if (page.getILLs()!=null) {
+			if (page.getILLs().size()>0) {
+				if (page.getInfobox()!=null) {
+					if (page.getInfobox().getAttributes()!= null) {
+						if (page.getInfobox().getAttributes().size()>0) {
+							for (InfoboxAttribute att:page.getInfobox().getAttributes()) {
+								if (!att.equals(null)) {
+									if (!att.getName().equals("") && !att.getValue().equals("")) {
+										isConsistent = true;
+									}
+								}
+							}
+						}
+					}						
+				}
+			}
+		}
+		
+		return isConsistent;
 	}
 	
 	/**
@@ -56,7 +87,7 @@ public class Converter {
 		InfoboxExtractionObject extractedChunk = Parser.extractInfboxesFromUnstructuredText(pageData, ignoreUnnamedAttributes, isNamesToLowerCase);
 		Infobox box = null;
 		//take the 1st (the only in this case) infobox
-		for (Infobox mbox : extractedChunk.getInfoBoxes().values()) {
+		for (Infobox mbox : extractedChunk.getInfoBoxes()) {
 			box = mbox;
 			break;
 		}

@@ -1,7 +1,7 @@
 package mp.dataclasses;
 
-import java.util.HashMap;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class wraps Wikipedia Infobox into an object format
@@ -10,9 +10,8 @@ import java.util.UUID;
  */
 public class Infobox {
 
-	private String ID;
 	private String infoboxClass;
-	private HashMap<String, InfoboxAttribute> attributes;
+	private List<InfoboxAttribute> attributes;
 	private boolean isInitialized = false;
 	
 	/**
@@ -21,20 +20,17 @@ public class Infobox {
 	 */
 	public Infobox(String name) {
 		this.infoboxClass = name;
-		this.ID = UUID.randomUUID().toString();
-		this.attributes = new HashMap<String, InfoboxAttribute>();
+		this.attributes = new ArrayList<InfoboxAttribute>();
 		this.isInitialized = true;
 	}
-	
 	
 	/**
 	 * This class wraps Wikipedia Infobox into an object format
 	 * @param infoboxClass Infobox class name
 	 * @param attributes Attribute (parameters) set
 	 */
-	public Infobox(String name, HashMap<String, InfoboxAttribute> attributes) {
+	public Infobox(String name, List<InfoboxAttribute> attributes) {
 		this.infoboxClass = name;
-		this.ID = UUID.randomUUID().toString();
 		this.attributes = attributes;
 		this.isInitialized = true;
 	}
@@ -46,10 +42,10 @@ public class Infobox {
 		this.infoboxClass = name;
 	}
 	
-	public HashMap<String, InfoboxAttribute> getAttributes() {
+	public List<InfoboxAttribute> getAttributes() {
 		return attributes;
 	}
-	public void setAttributes(HashMap<String, InfoboxAttribute> attributes) {
+	public void setAttributes(List<InfoboxAttribute> attributes) {
 		this.attributes = attributes;
 	}
 
@@ -59,10 +55,5 @@ public class Infobox {
 	
 	public int size() {
 		return attributes.size();
-	}
-
-
-	public String getID() {
-		return ID;
 	}
 }
