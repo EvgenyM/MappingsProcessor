@@ -58,6 +58,38 @@ public class JsonIOManager extends FileIO {
 	}
 	
 	/**
+	 * Writes an object ({@code HashMap<String, WikiPage> wikiData}) to a JSON file (best for multiple calls
+	 * @param wikiData
+	 * @param path
+	 * @param isFirstChunk whether the writer is called at the first time in the series.
+	 */
+	public void writeToJson(HashMap<String, WikiPage> wikiData, String path, boolean isFirstChunk) {
+		int dumpIter = 0;
+		boolean appendToFile = true;
+		if (isFirstChunk) {
+			appendToFile = false;//file just started
+		}
+		HashMap<String, WikiPage> buffdata = new HashMap<String, WikiPage>();
+		for (Map.Entry<String,WikiPage> page : wikiData.entrySet()) {
+			if (page!=null) {
+				buffdata.put(page.getKey(), page.getValue());
+				dumpIter++;
+				if (dumpIter >= WRITE_BUFFER_CHUNK) {
+					writeJson(buffdata, path, appendToFile);
+					if (!appendToFile) {
+						appendToFile = true;
+					}
+					buffdata.clear();
+					dumpIter = 0;
+				}
+			}
+		}
+		if (dumpIter>0) {
+			writeJson(buffdata, path, appendToFile);
+		}
+	}
+	
+	/**
 	 * Reads an object ({@code HashMap<String, WikiPage> wikiData}) from a String file in JSON
 	 * @param path
 	 * @return
