@@ -1,6 +1,7 @@
 package mp.dataclasses;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Wrapper class for a page object.
@@ -47,4 +48,26 @@ public class WikiPage {
 		this.pageTitle = pageTitle;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuilder res = new StringBuilder();
+		res.append("*****BEGIN*****");
+		res.append(this.getPageTitle());
+		res.append("ILLS:" + this.getILLs().size());
+		HashMap<String, WikiLink> ills = this.getILLs();
+		for (WikiLink lnk : ills.values()) {
+			res.append(lnk.getLangCode()+":"+lnk.getSameAsPageTitle()+" Cat:"+lnk.getSubCategory());
+			res.append("GOOD:"+lnk.isGood()+":"+lnk.getGoodLangCode());
+			res.append("FEATURED:" + lnk.isFeatured()+":"+lnk.getFeaturedLangCode());
+		}
+		Infobox box = this.getInfobox();
+		res.append("Infobox class:" + box.getInfoboxClass());
+		List<InfoboxAttribute> attrs = box.getAttributes();
+		res.append("Attributes:" + attrs.size());
+		for (InfoboxAttribute attr : attrs) {
+			res.append("Type: "+attr.getType() + " Attribute: "+ attr.getName()+" Value: "+attr.getValue());
+		}
+		res.append("*****END*****");
+		return res.toString();
+	}
 }

@@ -8,66 +8,43 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 
 import mp.dataclasses.Infobox;
-import mp.dataclasses.InfoboxStatistics;
+import mp.dataclasses.InfoboxSetStatistics;
 import mp.dataclasses.WikiPage;
 import mp.exceptions.FileTooLargeException;
+import mp.global.GlobalVariables;
 import mp.io.FileIO;
 import mp.io.JsonIOManager;
 import mp.io.WikiDataExtractor;
 
 import org.xml.sax.SAXException;
 
-public class Executor {
-	
-	//public static final String path = "E:/WikiDumps/unzipped/de/dewiki-20140615-pages-articles/dewiki_articles.xml";//"D:/1M Mannheim/Master Thesis/WikiData/enwiki/enwiki_20140502_pages_articles1.xml";//"D:/1M Mannheim/Master Thesis/WikiData/frwiki/frwiki-20140521-pages-articles1.xml";//
-	//public static final String dumpPath = "E:/WikiMappingsOutput/stats.csv";
-
-	//public static final String dumpJson = "E:/WikiMappingsOutput/PagesAsJson.txt";
-	//public static final String StatsJson = "E:/WikiMappingsOutput/Stats.csv";
-	
-	public static final String[] pageSetsToAnalyze = new String[] {
-		"E:/WikiDumps/unzipped/fr/frwiki-20140626-pages-articles/frwiki_articles.xml",
-		"E:/WikiDumps/unzipped/nl/nlwiki-20140630-pages-articles/nlwiki_articles.xml",
-		"E:/WikiDumps/unzipped/es/eswiki-20140613-pages-articles/eswiki_articles.xml",
-		"E:/WikiDumps/unzipped/ru/dewiki-20140615-pages-articles/ruwiki_articles.xml",
-		"E:/WikiDumps/unzipped/it/itwiki-20140612-pages-articles/itwiki_articles.xml"
-		};
-	
-	public static final String[] dumpsToJson = new String[] {
-		"E:/WikiMappingsOutput/FR_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NL_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/ES_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/RU_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/IT_PagesAsJson.txt"
-		};
-	
-	public static final String[] StatsJson = new String[] {
-		"E:/WikiMappingsOutput/FR_Stats.csv",
-		"E:/WikiMappingsOutput/NL_Stats.csv",
-		"E:/WikiMappingsOutput/ES_Stats.csv",
-		"E:/WikiMappingsOutput/RU_Stats.csv",
-		"E:/WikiMappingsOutput/IT_Stats.csv"
-		};
-	
-	public static final String[] Logs = new String[] {
-		"E:/WikiMappingsOutput/FR_log.txt",
-		"E:/WikiMappingsOutput/NL_log.txt",
-		"E:/WikiMappingsOutput/ES_log.txt",
-		"E:/WikiMappingsOutput/RU_log.txt",
-		"E:/WikiMappingsOutput/IT_log.txt"
-		};
+public class Executor {	
 	
 	public static void main(String[] args) {
+		makeETL();
 		
-		for (int i=0;i<pageSetsToAnalyze.length;i++){
-			extractAndDumpPages(pageSetsToAnalyze[i], dumpsToJson[i], Logs[i]);			
-			HashMap<String, WikiPage> wikiData = retrieveDumpedPages(dumpsToJson[i]);
-			getStatistics(wikiData, StatsJson[i]);
+	}
+	
+	/**
+	 * Performs initial transformation of WikiData to {@link WikiPage} objects.
+	 * Reads the file chunk by chunk, extracts Interlingual links, Infoboxes with their attributes,
+	 * and generates statistics for retrieved dataset.
+	 */
+	public static void makeETL() {
+		for (int i=0;i<GlobalVariables.pageSetsToAnalyze.length;i++){
+			extractAndDumpPages(GlobalVariables.pageSetsToAnalyze[i], GlobalVariables.dumpsToJson[i], GlobalVariables.Logs[i]);			
+			HashMap<String, WikiPage> wikiData = retrieveDumpedPages(GlobalVariables.dumpsToJson[i]);
+			getStatistics(wikiData, GlobalVariables.StatsJson[i]);
 		}
 	}
 	
+	/**
+	 * Extracts the {@link WikiPage}s from raw WikiData and dumps them to a given location by parts
+	 * @param pagesLocation
+	 * @param dumpLocation
+	 * @param logpath
+	 */
 	private static void extractAndDumpPages(String pagesLocation, String dumpLocation, String logpath) {
-		HashMap<String, WikiPage> wikiData = new HashMap<String, WikiPage>();		
 		System.out.println("Started reading file: "+pagesLocation);
 		WikiDataExtractor extractor = new WikiDataExtractor(pagesLocation, logpath);
 		extractor.setIgnoreUnnamedAttributes(true);//Strict mode since unnamed attributes cause ambiguity
@@ -87,6 +64,13 @@ public class Executor {
 		extractor = null;
 	}
 	
+	/**
+	 * Extracts the {@link WikiPage}s from raw WikiData
+	 * @param path
+	 * @param logpath
+	 * @return
+	 */
+	@SuppressWarnings("unused")
 	private static HashMap<String, WikiPage> extractPages(String path, String logpath) {
 		HashMap<String, WikiPage> wikiData = new HashMap<String, WikiPage>();		
 		System.out.println("Started reading file: "+path);
@@ -111,11 +95,21 @@ public class Executor {
 		return wikiData;
 	}
 	
+	/**
+	 * Dumps set of {@link WikiPage}s to a given path
+	 * @param wikiData
+	 * @param dumpJson
+	 */
 	private static void dumpPages(HashMap<String, WikiPage> wikiData, String dumpJson) {
 		JsonIOManager jsonIOManager = new JsonIOManager();
 		jsonIOManager.writeToJson(wikiData, dumpJson);
 	}
 	
+	/**
+	 * Reads a set of {@link WikiPage}s
+	 * @param dumpJson
+	 * @return
+	 */
 	private static HashMap<String, WikiPage> retrieveDumpedPages(String dumpJson) {
 		JsonIOManager jsonIOManager = new JsonIOManager();
 		HashMap<String, WikiPage> wikiData = new HashMap<String, WikiPage>();
@@ -127,8 +121,13 @@ public class Executor {
 		return wikiData;
 	}
 	
+	/**
+	 * Generates statistics for a given set of {@link WikiPage}s
+	 * @param wikiData
+	 * @param dumpStats
+	 */
 	private static void getStatistics(HashMap<String, WikiPage> wikiData, String dumpStats) {
-		InfoboxStatistics analyzer = new InfoboxStatistics(wikiData);
+		InfoboxSetStatistics analyzer = new InfoboxSetStatistics(wikiData);
 		HashMap<String, List<Infobox>> stats = analyzer.getStatistics();
 		System.out.println("Number of classes: "+analyzer.getNumberOfClasses());
 		FileIO.writeToFile(dumpStats, "", false);

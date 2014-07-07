@@ -9,12 +9,12 @@ import java.util.List;
  * @author Evgeny Mitichkin
  *
  */
-public class InfoboxStatistics {
+public class InfoboxSetStatistics {
 
 	private HashMap<String, List<Infobox>> statistics = new HashMap<String, List<Infobox>>();
 	private HashMap<String, WikiPage> pageSet; 
 
-	public InfoboxStatistics(HashMap<String, WikiPage> map) {
+	public InfoboxSetStatistics(HashMap<String, WikiPage> map) {
 		this.pageSet = map;
 		generateStatistics();
 	}

@@ -50,8 +50,8 @@ public class Converter {
 	private static boolean isPageConsistent(WikiPage page) {
 		boolean isConsistent = false;
 		
-		if (page.getILLs()!=null) {
-			if (page.getILLs().size()>0) {
+		//if (page.getILLs()!=null) {
+			//if (page.getILLs().size()>0) {
 				if (page.getInfobox()!=null) {
 					if (page.getInfobox().getAttributes()!= null) {
 						if (page.getInfobox().getAttributes().size()>0) {
@@ -65,8 +65,8 @@ public class Converter {
 						}
 					}						
 				}
-			}
-		}
+			//}
+		//}
 		
 		return isConsistent;
 	}

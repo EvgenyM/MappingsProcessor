@@ -22,8 +22,6 @@ import mp.io.utils.Parser;
 
 import org.xml.sax.SAXException;
 
-//TODO Create utils: Parser class, Converter class
-
 /**
  * 
  * @author Evgeny Mitichkin
@@ -33,13 +31,13 @@ public class WikiDataExtractor {
 	
 	public static final int GC_ITERATIONS = 10;
 	private static final int PAGE_SET_INITIAL_CAPACITY = 5000;
-	private static String logPath;
 	
 	@SuppressWarnings("unused")
 	private static final String pageBeginTag = "<page";
 	private static final String pageEndTag = "</page>";
 	
 	private String mPath;
+	private String logPath;
 	private boolean ignoreUnnamedAttributes;
 	private boolean namesToLowerCase;
 	
@@ -47,7 +45,7 @@ public class WikiDataExtractor {
 	
 	public WikiDataExtractor(String path, String logPath) {
 		this.mPath = path;
-		this.setLogPath(logPath);
+		this.logPath = logPath;
 		this.ignoreUnnamedAttributes = false;
 		this.setNamesToLowerCase(false);
 	}
@@ -286,7 +284,7 @@ public class WikiDataExtractor {
 	}
 	
 	private void log(String str, boolean append) {
-		FileIO.writeToFile(getLogPath(), str, append);
+		FileIO.writeToFile(logPath, str, append);
 	}
 
 	public String getPath() {
@@ -313,11 +311,11 @@ public class WikiDataExtractor {
 		this.namesToLowerCase = namesToLowerCase;
 	}
 
-	public static String getLogPath() {
+	public String getLogPath() {
 		return logPath;
 	}
 
-	public static void setLogPath(String logPath) {
-		WikiDataExtractor.logPath = logPath;
+	public void setLogPath(String logPath) {
+		this.logPath = logPath;
 	}
 }
