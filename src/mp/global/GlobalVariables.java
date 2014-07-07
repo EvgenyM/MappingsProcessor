@@ -26,13 +26,26 @@ public class GlobalVariables {
 	 * Locations processed dumps of WikiData
 	 */
 	public static final String[] dumpsToJson = new String[] {
-		"E:/WikiMappingsOutput/EN_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/DE_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/FR_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NL_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/ES_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/RU_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/IT_PagesAsJson.txt"
+		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki EN/EN_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki DE/DE_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki FR/FR_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki NL/NL_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki ES/ES_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki RU/RU_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki IT/IT_PagesAsJson.txt"
+		};
+	
+	/**
+	 * Locations processed dumps of WikiData
+	 */
+	public static final String[] dumpsToJson4Graph = new String[] {
+		"E:/WikiMappingsOutput/EN_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/DE_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/FR_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/NL_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/ES_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/RU_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/IT_PagesAsJson4Graph.json4g"
 		};
 	
 	/**

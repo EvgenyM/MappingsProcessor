@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 
 import mp.dataclasses.WikiPage;
+import mp.exceptions.PageConversionException;
 import mp.global.GlobalVariables;
 import mp.io.dataclasses.PageMapEntry;
 
@@ -28,17 +29,19 @@ public class JsonIOManager extends FileIO {
 	public JsonIOManager() { 
 		
 	}
-
+	
 	/**
 	 * Writes an object ({@code HashMap<String, WikiPage> wikiData}) to a JSON file
+	 * @param <K>
+	 * @param <V>
 	 * @param wikiData
 	 * @param path
 	 */
-	public void writeToJson(HashMap<String, WikiPage> wikiData, String path) {
+	public <K, V> void writeToJson(HashMap<K, V> wikiData, String path) {
 		int dumpIter = 0;
 		boolean appendToFile = false;
-		HashMap<String, WikiPage> buffdata = new HashMap<String, WikiPage>();
-		for (Map.Entry<String,WikiPage> page : wikiData.entrySet()) {
+		HashMap<K, V> buffdata = new HashMap<K, V>();
+		for (Map.Entry<K, V> page : wikiData.entrySet()) {
 			if (page!=null) {
 				buffdata.put(page.getKey(), page.getValue());
 				dumpIter++;
@@ -59,18 +62,20 @@ public class JsonIOManager extends FileIO {
 	
 	/**
 	 * Writes an object ({@code HashMap<String, WikiPage> wikiData}) to a JSON file (best for multiple calls
+	 * @param <K>
+	 * @param <V>
 	 * @param wikiData
 	 * @param path
 	 * @param isFirstChunk whether the writer is called at the first time in the series.
 	 */
-	public void writeToJson(HashMap<String, WikiPage> wikiData, String path, boolean isFirstChunk) {
+	public <K, V> void writeToJson(HashMap<K, V> wikiData, String path, boolean isFirstChunk) {
 		int dumpIter = 0;
 		boolean appendToFile = true;
 		if (isFirstChunk) {
 			appendToFile = false;//file just started
 		}
-		HashMap<String, WikiPage> buffdata = new HashMap<String, WikiPage>();
-		for (Map.Entry<String,WikiPage> page : wikiData.entrySet()) {
+		HashMap<K, V> buffdata = new HashMap<K, V>();
+		for (Map.Entry<K,V> page : wikiData.entrySet()) {
 			if (page!=null) {
 				buffdata.put(page.getKey(), page.getValue());
 				dumpIter++;
@@ -134,12 +139,63 @@ public class JsonIOManager extends FileIO {
 		return result;
 	}
 	
-	private void writeJson(HashMap<String, WikiPage> data, String path, boolean append) {
+	/**
+	 * Reads an object ({@code HashMap<String, WikiPage> wikiData}) from a String file in JSON. Passes the result to a notifier object.
+	 * @param path
+	 * @param notifier
+	 * @return 
+	 * @return
+	 * @throws IOException 
+	 * @throws PageConversionException 
+	 */
+	public void readFromJson(String path, JsonIONotifier notifier) throws IOException, PageConversionException {
+		HashMap<String, WikiPage> readBuffer = new HashMap<String, WikiPage>();
+		
+		BufferedReader br = new BufferedReader(new FileReader(path));
+		Gson gson = new Gson();
+		int cnt = 0;
+		long totalRead = 0;
+		String pageAsString = "";
+		while ((pageAsString = br.readLine()) != null) {
+			try {
+				PageMapEntry<String,WikiPage> pg = gson.fromJson(pageAsString, PageMapEntry.class);
+				readBuffer.put(pg.getKey(), pg.getValue());
+				cnt++;
+				if (cnt>=READ_BUFFER_CHUNK) {
+					boolean success = notifier.onChunkProcessed(readBuffer);
+					readBuffer.clear();
+					totalRead+=cnt;
+					cnt = 0;
+					if (GlobalVariables.IS_DEBUG) {
+						System.out.println("Lines read: " + totalRead);
+					}
+					if (!success) {
+						throw new PageConversionException("Exception happened in notifire object");
+					}
+				}
+			} catch (Exception exxx) {
+				System.out.println("Json parsing error line " + cnt + " line :"+pageAsString);
+				cnt++;
+			}				
+		}
+		br.close();
+		if (cnt>0) {
+			boolean success = notifier.onChunkProcessed(readBuffer);
+			if (!success) {
+				throw new PageConversionException("Exception happened in notifire object");
+			}
+			readBuffer = null;
+		}	
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Json parsing done.");
+	}
+	
+	private <K, V> void writeJson(HashMap<K, V> data, String path, boolean append) {
 		boolean shouldAppend = append;
 		Gson gson = new Gson();	
 		List<String> result = new ArrayList<String>();// "";
 		int i=0;
-		for (Map.Entry<String,WikiPage> page : data.entrySet()) {
+		for (Map.Entry<K,V> page : data.entrySet()) {
 			result.add(gson.toJson(page)+"\n");
 			i++;
 		}

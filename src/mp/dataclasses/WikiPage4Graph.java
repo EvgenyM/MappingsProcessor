@@ -32,7 +32,7 @@ public class WikiPage4Graph {
 	public HashMap<String, WikiLink> getMainILLs() {		
 		int arrSize = getNumberOfMainILLs();		
 		if (arrSize>0) {
-			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize*0.75+1));
+			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize/0.75+1));
 			for (Map.Entry<String, WikiLink> ill : ILLs.entrySet()) {
 				if (ill.getValue().isInitialized())
 					resLinks.put(ill.getKey(), ill.getValue());
@@ -51,7 +51,7 @@ public class WikiPage4Graph {
 	public HashMap<String, WikiLink> getMainILLsByLanguage(String[] langCodes) {
 		int arrSize = getNumberOfMainILLs();		
 		if (arrSize>0) {
-			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize*0.75+1));
+			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize/0.75+1));
 			for (Map.Entry<String, WikiLink> ill : ILLs.entrySet()) {
 				if (ill.getValue().isInitialized()) {
 					for (int i=0;i<langCodes.length;i++) {
@@ -75,7 +75,7 @@ public class WikiPage4Graph {
 	public HashMap<String, WikiLink> getAdditionalILLs() {
 		int arrSize = getNumberOfAdditionalILLs();
 		if (arrSize>0) {
-			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize*0.75+1));
+			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize/0.75+1));
 			for (Map.Entry<String, WikiLink> ill : ILLs.entrySet()) {
 				if (ill.getValue().isGood() || ill.getValue().isFeatured()) {
 					resLinks.put(ill.getKey(), ill.getValue());
@@ -95,7 +95,7 @@ public class WikiPage4Graph {
 	public HashMap<String, WikiLink> getAdditionalILLsByLanguage(String[] langCodes) {
 		int arrSize = getNumberOfAdditionalILLs();
 		if (arrSize>0) {
-			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize*0.75+1));
+			HashMap<String, WikiLink> resLinks = new HashMap<String, WikiLink>((int) (arrSize/0.75+1));
 			for (Map.Entry<String, WikiLink> ill : ILLs.entrySet()) {
 				if (ill.getValue().isGood() || ill.getValue().isFeatured()) {
 					for (int i=0;i<langCodes.length;i++) {

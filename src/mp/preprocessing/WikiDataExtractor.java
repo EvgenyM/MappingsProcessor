@@ -1,4 +1,4 @@
-package mp.io;
+package mp.preprocessing;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -17,6 +17,8 @@ import mp.dataclasses.InfoboxAttribute;
 import mp.dataclasses.WikiPage;
 import mp.exceptions.FileTooLargeException;
 import mp.global.GlobalVariables;
+import mp.io.FileIO;
+import mp.io.JsonIOManager;
 import mp.io.utils.Converter;
 import mp.io.utils.Parser;
 
