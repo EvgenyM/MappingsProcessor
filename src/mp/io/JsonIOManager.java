@@ -96,13 +96,16 @@ public class JsonIOManager extends FileIO {
 	
 	/**
 	 * Reads an object ({@code HashMap<String, WikiPage> wikiData}) from a String file in JSON
+	 * @param <V>
+	 * @param <K>
+	 * @param <T>
 	 * @param path
 	 * @return
 	 * @throws IOException 
 	 */
-	public HashMap<String, WikiPage> readFromJson(String path) throws IOException {	
-		HashMap<String, WikiPage> result = new HashMap<String, WikiPage>();
-		HashMap<String, WikiPage> readBuffer = new HashMap<String, WikiPage>();
+	public <K, V, T> HashMap<K, V> readFromJson(String path, Class<T> classOfPage) throws IOException {	
+		HashMap<K, V> result = new HashMap<K, V>();
+		HashMap<K, V> readBuffer = new HashMap<K, V>();
 		
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		Gson gson = new Gson();
@@ -111,8 +114,9 @@ public class JsonIOManager extends FileIO {
 		String pageAsString = "";
 		while ((pageAsString = br.readLine()) != null) {
 			try {
-				PageMapEntry<String,WikiPage> pg = gson.fromJson(pageAsString, PageMapEntry.class);
-				readBuffer.put(pg.getKey(), pg.getValue());
+				//Page<K, V>
+				T pg = gson.fromJson(pageAsString, classOfPage);
+				readBuffer.put(((Map.Entry<K, V>) pg).getKey(), ((Map.Entry<K, V>) pg).getValue());
 				cnt++;
 				if (cnt>=READ_BUFFER_CHUNK) {
 					result.putAll(readBuffer);
@@ -126,6 +130,7 @@ public class JsonIOManager extends FileIO {
 			} catch (Exception exxx) {
 				System.out.println("Json parsing error line " + cnt + " line :"+pageAsString);
 				cnt++;
+				exxx.printStackTrace();
 				//br.close();
 			}				
 		}
@@ -141,6 +146,9 @@ public class JsonIOManager extends FileIO {
 	
 	/**
 	 * Reads an object ({@code HashMap<String, WikiPage> wikiData}) from a String file in JSON. Passes the result to a notifier object.
+	 * @param <K>
+	 * @param <V>
+	 * @param <T>
 	 * @param path
 	 * @param notifier
 	 * @return 
@@ -148,8 +156,8 @@ public class JsonIOManager extends FileIO {
 	 * @throws IOException 
 	 * @throws PageConversionException 
 	 */
-	public void readFromJson(String path, JsonIONotifier notifier) throws IOException, PageConversionException {
-		HashMap<String, WikiPage> readBuffer = new HashMap<String, WikiPage>();
+	public <K, V, T> void readFromJson(String path, JsonIONotifier notifier, Class<T> classOfPage) throws IOException, PageConversionException {
+		HashMap<K, V> readBuffer = new HashMap<K, V>();
 		
 		BufferedReader br = new BufferedReader(new FileReader(path));
 		Gson gson = new Gson();
@@ -158,8 +166,8 @@ public class JsonIOManager extends FileIO {
 		String pageAsString = "";
 		while ((pageAsString = br.readLine()) != null) {
 			try {
-				PageMapEntry<String,WikiPage> pg = gson.fromJson(pageAsString, PageMapEntry.class);
-				readBuffer.put(pg.getKey(), pg.getValue());
+				T pg = gson.fromJson(pageAsString, classOfPage);
+				readBuffer.put(((Map.Entry<K, V>) pg).getKey(), ((Map.Entry<K, V>) pg).getValue());
 				cnt++;
 				if (cnt>=READ_BUFFER_CHUNK) {
 					boolean success = notifier.onChunkProcessed(readBuffer);

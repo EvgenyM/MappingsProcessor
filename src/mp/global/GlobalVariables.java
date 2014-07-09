@@ -23,55 +23,68 @@ public class GlobalVariables {
 		};
 	
 	/**
-	 * Locations processed dumps of WikiData
+	 * Locations of processed dumps of WikiData
 	 */
 	public static final String[] dumpsToJson = new String[] {
-		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki EN/EN_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki DE/DE_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki FR/FR_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki NL/NL_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki ES/ES_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki RU/RU_PagesAsJson.txt",
-		"E:/WikiMappingsOutput/NoILLsOrILLs/Wiki IT/IT_PagesAsJson.txt"
+		"E:/WikiMappingsOutput/Raw extracted data/Wiki EN/EN_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/Raw extracted data/Wiki DE/DE_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/Raw extracted data/Wiki FR/FR_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/Raw extracted data/Wiki NL/NL_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/Raw extracted data/Wiki ES/ES_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/Raw extracted data/Wiki RU/RU_PagesAsJson.txt",
+		"E:/WikiMappingsOutput/Raw extracted data/Wiki IT/IT_PagesAsJson.txt"
 		};
 	
 	/**
-	 * Locations processed dumps of WikiData
+	 * Locations Graph-ready data
 	 */
 	public static final String[] dumpsToJson4Graph = new String[] {
-		"E:/WikiMappingsOutput/EN_PagesAsJson4Graph.json4g",
-		"E:/WikiMappingsOutput/DE_PagesAsJson4Graph.json4g",
-		"E:/WikiMappingsOutput/FR_PagesAsJson4Graph.json4g",
-		"E:/WikiMappingsOutput/NL_PagesAsJson4Graph.json4g",
-		"E:/WikiMappingsOutput/ES_PagesAsJson4Graph.json4g",
-		"E:/WikiMappingsOutput/RU_PagesAsJson4Graph.json4g",
-		"E:/WikiMappingsOutput/IT_PagesAsJson4Graph.json4g"
+		"E:/WikiMappingsOutput/Graph-ready data/EN_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/Graph-ready data/DE_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/Graph-ready data/FR_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/Graph-ready data/NL_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/Graph-ready data/ES_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/Graph-ready data/RU_PagesAsJson4Graph.json4g",
+		"E:/WikiMappingsOutput/Graph-ready data/IT_PagesAsJson4Graph.json4g"
 		};
 	
 	/**
 	 * Locations of statistics for the WikiData
 	 */
 	public static final String[] StatsJson = new String[] {
-		"E:/WikiMappingsOutput/EN_Stats.csv",
-		"E:/WikiMappingsOutput/DE_Stats.csv",
-		"E:/WikiMappingsOutput/FR_Stats.csv",
-		"E:/WikiMappingsOutput/NL_Stats.csv",
-		"E:/WikiMappingsOutput/ES_Stats.csv",
-		"E:/WikiMappingsOutput/RU_Stats.csv",
-		"E:/WikiMappingsOutput/IT_Stats.csv"
+		"E:/WikiMappingsOutput/Statistics/EN_Stats.csv",
+		"E:/WikiMappingsOutput/Statistics/DE_Stats.csv",
+		"E:/WikiMappingsOutput/Statistics/FR_Stats.csv",
+		"E:/WikiMappingsOutput/Statistics/NL_Stats.csv",
+		"E:/WikiMappingsOutput/Statistics/ES_Stats.csv",
+		"E:/WikiMappingsOutput/Statistics/RU_Stats.csv",
+		"E:/WikiMappingsOutput/Statistics/IT_Stats.csv"
+		};
+	
+	/**
+	 * Locations of statistics for the WikiData
+	 */
+	public static final String[] StatsJson4g = new String[] {
+		"E:/WikiMappingsOutput/Statistics/EN/",
+		"E:/WikiMappingsOutput/Statistics/DE/",
+		"E:/WikiMappingsOutput/Statistics/FR/",
+		"E:/WikiMappingsOutput/Statistics/NL/",
+		"E:/WikiMappingsOutput/Statistics/ES/",
+		"E:/WikiMappingsOutput/Statistics/RU/",
+		"E:/WikiMappingsOutput/Statistics/IT/"
 		};
 	
 	/**
 	 * Locations for logging the system events for each dataset
 	 */
 	public static final String[] Logs = new String[] {
-		"E:/WikiMappingsOutput/EN_log.txt",
-		"E:/WikiMappingsOutput/DE_log.txt",
-		"E:/WikiMappingsOutput/FR_log.txt",
-		"E:/WikiMappingsOutput/NL_log.txt",
-		"E:/WikiMappingsOutput/ES_log.txt",
-		"E:/WikiMappingsOutput/RU_log.txt",
-		"E:/WikiMappingsOutput/IT_log.txt"
+		"E:/WikiMappingsOutput/Logs/EN_log.txt",
+		"E:/WikiMappingsOutput/Logs/DE_log.txt",
+		"E:/WikiMappingsOutput/Logs/FR_log.txt",
+		"E:/WikiMappingsOutput/Logs/NL_log.txt",
+		"E:/WikiMappingsOutput/Logs/ES_log.txt",
+		"E:/WikiMappingsOutput/Logs/RU_log.txt",
+		"E:/WikiMappingsOutput/Logs/IT_log.txt"
 		};
 	
 }

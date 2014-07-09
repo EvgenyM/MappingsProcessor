@@ -8,7 +8,7 @@ import java.util.List;
  * @author Evgeny Mitichkin
  *
  */
-public class WikiPage {
+public class WikiPage extends WikiPageBase{
 
 	private String pageTitle;
 	private Infobox infobox;

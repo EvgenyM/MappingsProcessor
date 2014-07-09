@@ -11,6 +11,7 @@ public class Executor {
 					GlobalVariables.dumpsToJson,
 					GlobalVariables.StatsJson,
 					GlobalVariables.Logs);*/
-		proc.compress4Graph(GlobalVariables.dumpsToJson, GlobalVariables.dumpsToJson4Graph);
+		//proc.compress4Graph(GlobalVariables.dumpsToJson, GlobalVariables.dumpsToJson4Graph, ILLTypes.Main);
+		proc.getStatsForGraph(GlobalVariables.dumpsToJson4Graph, GlobalVariables.StatsJson4g);
 	}
 }

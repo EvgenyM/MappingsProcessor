@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Evgeny Mitichkin
  *
  */
-public class WikiPage4Graph {
+public class WikiPage4Graph extends WikiPageBase {
 	private String pageTitle;
 	private HashMap<String, WikiLink> ILLs;//Should keep only the ILLs among the language space
 	private String infoboxClass;

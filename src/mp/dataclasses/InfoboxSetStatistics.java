@@ -23,6 +23,10 @@ public class InfoboxSetStatistics {
 		return statistics;
 	}
 	
+	/**
+	 * Generates a correpondense set of Infoboxes and their keys by grouping Infoboxes 
+	 * on the basis of their class.
+	 */
 	private void generateStatistics() {
 		for (WikiPage pg : pageSet.values()) {
 			Infobox box = pg.getInfobox();

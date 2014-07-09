@@ -6,7 +6,9 @@ import mp.dataclasses.WikiPage;
 
 public interface JsonIONotifier {
 	/**
-	 * happens when the contributer processes the chunk and requires to read a new portion
+	 * Happens when the contributer processes the chunk and requires to read a new portion
+	 * @param <K>
+	 * @param <V>
 	 */
-	public boolean onChunkProcessed(HashMap<String, WikiPage> pageSet);
+	public <K, V> boolean onChunkProcessed(HashMap<K, V> pageSet);
 }
