@@ -64,6 +64,19 @@ public class GlobalVariables {
 	/**
 	 * Locations of statistics for the WikiData
 	 */
+	public static final String[] StatsJsonRaw = new String[] {
+		"E:/WikiMappingsOutput/Statistics/Raw/EN/",
+		"E:/WikiMappingsOutput/Statistics/Raw/DE/",
+		"E:/WikiMappingsOutput/Statistics/Raw/FR/",
+		"E:/WikiMappingsOutput/Statistics/Raw/NL/",
+		"E:/WikiMappingsOutput/Statistics/Raw/ES/",
+		"E:/WikiMappingsOutput/Statistics/Raw/RU/",
+		"E:/WikiMappingsOutput/Statistics/Raw/IT/"
+		};
+	
+	/**
+	 * Locations of statistics for the WikiData
+	 */
 	public static final String[] StatsJson4g = new String[] {
 		"E:/WikiMappingsOutput/Statistics/EN/",
 		"E:/WikiMappingsOutput/Statistics/DE/",

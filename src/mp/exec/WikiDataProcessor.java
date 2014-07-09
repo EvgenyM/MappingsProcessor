@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.SSLEngineResult.Status;
 import javax.xml.parsers.ParserConfigurationException;
 
 import mp.dataclasses.ILLTypes;
 import mp.dataclasses.Infobox;
 import mp.dataclasses.InfoboxSetStatistics;
+import mp.dataclasses.RawItemStatistics;
 import mp.dataclasses.WikiDataStatistics;
 import mp.dataclasses.WikiPage;
 import mp.dataclasses.WikiPage4Graph;
@@ -20,6 +22,7 @@ import mp.io.JsonIOManager;
 import mp.io.dataclasses.Page4GraphMapEntry;
 import mp.io.dataclasses.PageMapEntry;
 import mp.preprocessing.Infobox4GraphFactory;
+import mp.preprocessing.StatisticsFactory;
 import mp.preprocessing.WikiDataExtractor;
 
 import org.xml.sax.SAXException;
@@ -32,8 +35,55 @@ import org.xml.sax.SAXException;
  */
 public class WikiDataProcessor{
 	
-	public WikiDataProcessor() {
-		
+	public WikiDataProcessor() { }
+	
+	/**
+	 * Calculates statistics for the extracted data that was previously dumped on the drive. Performs operations by parts, i.e. suitable
+	 * for handling massive arrays of data.
+	 */
+	public void getStatsForRawDumpedData(String[] transformedDataPath, String[] dumpStatisticsTo) {
+		for (int i=0; i<transformedDataPath.length; i++) {
+			JsonIOManager fileReader = new JsonIOManager();
+			StatisticsFactory statFactory = StatisticsFactory.getInstance();
+			try {
+				fileReader.readFromJson(transformedDataPath[i], statFactory, PageMapEntry.class);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (PageConversionException e) {
+				System.out.println("Generating statistics for" + transformedDataPath[i] + " failed");
+				e.printStackTrace();
+			}
+			
+			long numberOfAttrs = 0;
+			HashMap<String, String> ibxClasses = new HashMap<String, String>();
+			for (RawItemStatistics pageItem : statFactory.getmStatSet()) {
+				numberOfAttrs += pageItem.getNumberOfAttributes();
+				ibxClasses.put(pageItem.getInfoboxClass(), pageItem.getInfoboxClass());
+			}
+			long numberOfIBXClasses = ibxClasses.size();
+			
+			statFactory.getTotalNumberOfItems();
+			statFactory.getTotalNumberOfILLs();
+			statFactory.getNumberOfCompleteIBXs();
+			statFactory.getmStatSet();
+			
+			
+			
+			
+			String path = dumpStatisticsTo+"StatsForRawData.txt";
+			StringBuilder bldr = new StringBuilder();
+			bldr.append("Number of pages (total): "+statFactory.getTotalNumberOfItems()+"\n");
+			bldr.append("Number of pages (with complete infoboxes): "+statFactory.getNumberOfCompleteIBXs()+"\n");
+			bldr.append("Number of ILLs: "+statFactory.getTotalNumberOfILLs()+"\n");
+			bldr.append("Number of Attributes per page: "+statFactory.getTotalNumberOfILLs()+"\n");
+			bldr.append("Number of ILLs: "+(float)numberOfAttrs/(float)statFactory.getNumberOfCompleteIBXs()+"\n");
+			bldr.append("Number of Infobox Classes: "+numberOfIBXClasses+"\n");
+			FileIO.writeToFile(path, bldr.toString(), false);
+			
+			//release resources
+			ibxClasses = null;
+			statFactory = null;
+		}
 	}
 	
 	/**
