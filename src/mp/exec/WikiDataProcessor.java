@@ -75,7 +75,7 @@ public class WikiDataProcessor{
 			
 			//release resources
 			ibxClasses = null;
-			statFactory = null;
+			statFactory.setInstanceNull();
 		}
 	}
 	

@@ -25,6 +25,9 @@ public class StatisticsFactory implements JsonIONotifier{
 
 	private StatisticsFactory() {
 		mStatSet = new ArrayList<RawItemStatistics>();
+		totalNumberOfILLs = 0;
+		numberOfCompleteIBXs = 0;
+		totalNumberOfItems = 0;
 	}
 	
 	public static StatisticsFactory getInstance() {
@@ -80,5 +83,9 @@ public class StatisticsFactory implements JsonIONotifier{
 
 	public long getTotalNumberOfILLs() {
 		return totalNumberOfILLs;
+	}
+
+	public void setInstanceNull() {
+		StatisticsFactory.instance = null;
 	}
 }
