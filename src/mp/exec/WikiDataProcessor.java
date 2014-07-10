@@ -60,24 +60,17 @@ public class WikiDataProcessor{
 				numberOfAttrs += pageItem.getNumberOfAttributes();
 				ibxClasses.put(pageItem.getInfoboxClass(), pageItem.getInfoboxClass());
 			}
-			long numberOfIBXClasses = ibxClasses.size();
+			long numberOfIBXClasses = ibxClasses.size();			
 			
-			statFactory.getTotalNumberOfItems();
-			statFactory.getTotalNumberOfILLs();
-			statFactory.getNumberOfCompleteIBXs();
-			statFactory.getmStatSet();
-			
-			
-			
-			
-			String path = dumpStatisticsTo+"StatsForRawData.txt";
+			String path = dumpStatisticsTo[i]+"StatsForRawData.txt";
 			StringBuilder bldr = new StringBuilder();
 			bldr.append("Number of pages (total): "+statFactory.getTotalNumberOfItems()+"\n");
 			bldr.append("Number of pages (with complete infoboxes): "+statFactory.getNumberOfCompleteIBXs()+"\n");
 			bldr.append("Number of ILLs: "+statFactory.getTotalNumberOfILLs()+"\n");
-			bldr.append("Number of Attributes per page: "+statFactory.getTotalNumberOfILLs()+"\n");
-			bldr.append("Number of ILLs: "+(float)numberOfAttrs/(float)statFactory.getNumberOfCompleteIBXs()+"\n");
+			bldr.append("ILL completeness factor: "+(float)statFactory.getTotalNumberOfILLs()/(float)statFactory.getNumberOfCompleteIBXs()+"\n");
+			bldr.append("Number of Attributes per page: "+(float)numberOfAttrs/(float)statFactory.getNumberOfCompleteIBXs()+"\n");
 			bldr.append("Number of Infobox Classes: "+numberOfIBXClasses+"\n");
+			bldr.append("Number of pages per Infobox class: "+(float)statFactory.getNumberOfCompleteIBXs()/(float)numberOfIBXClasses+"\n");
 			FileIO.writeToFile(path, bldr.toString(), false);
 			
 			//release resources
