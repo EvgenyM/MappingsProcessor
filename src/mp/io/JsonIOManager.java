@@ -214,10 +214,5 @@ public class JsonIOManager extends FileIO {
 		String text = builder.toString();
 			
 		writeToFile(path, text, shouldAppend);
-		/*for (String str : result) {
-			writeToFile(path, str, shouldAppend);
-			if (!shouldAppend) 
-				shouldAppend = true;			
-		}*/
 	}
 }

@@ -17,11 +17,13 @@ import mp.dataclasses.WikiPage;
 import mp.dataclasses.WikiPage4Graph;
 import mp.exceptions.FileTooLargeException;
 import mp.exceptions.PageConversionException;
+import mp.global.GlobalVariables;
 import mp.io.FileIO;
 import mp.io.JsonIOManager;
 import mp.io.dataclasses.Page4GraphMapEntry;
 import mp.io.dataclasses.PageMapEntry;
 import mp.preprocessing.Infobox4GraphFactory;
+import mp.preprocessing.RawWikiDataParser;
 import mp.preprocessing.StatisticsFactory;
 import mp.preprocessing.WikiDataExtractor;
 
@@ -36,6 +38,38 @@ import org.xml.sax.SAXException;
 public class WikiDataProcessor{
 	
 	public WikiDataProcessor() { }
+	
+
+	/**
+	 * Extracts additional ILLs from the WIkiData
+	 * @param wikidata Path to the WikiData file
+	 */
+	public void getAdditionalILLs(String wikidata) {
+		
+		WikiDataExtractor extractor = new WikiDataExtractor(GlobalVariables.wikiData, GlobalVariables.wikiDataExtractionLog);
+		try {
+			extractor.readAndDumpWikidata(GlobalVariables.wikiDataTransformed);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (FileTooLargeException e) {
+			e.printStackTrace();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+		extractor = null;
+		/*JsonIOManager fileReader = new JsonIOManager();
+		RawWikiDataParser extractor = RawWikiDataParser.getInstance();
+		try {
+			fileReader.readFromJson(wikidata, extractor, String.class);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (PageConversionException e) {
+			System.out.println("ILL extraction for " + wikidata + " failed");
+			e.printStackTrace();
+		}*/
+	}
 	
 	/**
 	 * Calculates statistics for the extracted data that was previously dumped on the drive. Performs operations by parts, i.e. suitable

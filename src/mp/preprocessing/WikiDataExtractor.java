@@ -43,7 +43,7 @@ public class WikiDataExtractor {
 	private boolean ignoreUnnamedAttributes;
 	private boolean namesToLowerCase;
 	
-	public static final int chunkSize = 1024*1024*10;//100 MBytes
+	public static final int chunkSize = 1024*1024*1;//100 MBytes
 	
 	public WikiDataExtractor(String path, String logPath) {
 		this.mPath = path;
@@ -159,7 +159,7 @@ public class WikiDataExtractor {
 	/**
 	 * Reads the wikidata and returns a {@link HashSet} of {@link Infobox} wrapped objects with their attributes and properties. Should be called 
 	 * in case of large datasets (greater than the RAM size).
-	 * @param path Path to the dump
+	 * @param path Path write the dump to
 	 * @throws IOException
 	 * @throws FileTooLargeException
 	 * @throws SAXException 
@@ -186,7 +186,7 @@ public class WikiDataExtractor {
 			String wikiDataAsString = new String(bb.array(), "UTF-8");
 			bb.clear();
 			
-			//Adding the last chunk that was not properly processed
+			/*//Adding the last chunk that was not properly processed
 			if (readingIterationsPassed>0) {
 				StringBuilder wikiStr = new StringBuilder();
 				wikiStr.append(remainderString);
@@ -199,15 +199,27 @@ public class WikiDataExtractor {
 			//Calculate the index of the closing tag of last complete page to be extracted in a chunk
 			int lastCompletePageEndingIndex = wikiDataAsString.lastIndexOf(pageEndTag) + pageEndTag.length();
 			remainderString = wikiDataAsString.substring(lastCompletePageEndingIndex, wikiDataAsString.length());
-			wikiDataAsString = wikiDataAsString.substring(0, lastCompletePageEndingIndex);
+			wikiDataAsString = wikiDataAsString.substring(0, lastCompletePageEndingIndex);*/
+			int reps = readingIterationsPassed/4;
 			if (readingIterationsPassed>0) {
+				//wikiDataAsString = Parser.completeChunk(wikiDataAsString, true);
+				FileIO.writeToFile(path+reps+".txt", wikiDataAsString, true);
+				//dumpPages(wikiDataAsString, path, false);
+			} else {
+				//wikiDataAsString = Parser.completeChunk(wikiDataAsString, false);
+				FileIO.writeToFile(path+reps+".txt", wikiDataAsString, false);
+				//dumpPages(wikiDataAsString, path, true);
+			}
+			readingIterationsPassed++;
+			
+			/*if (readingIterationsPassed>0) {
 				wikiDataAsString = Parser.completeChunk(wikiDataAsString, true);
 			} else {
 				wikiDataAsString = Parser.completeChunk(wikiDataAsString, false);
 			}
 			
 			HashMap<String, WikiPage> pagesPerIteration = Converter.extractPages(wikiDataAsString, ignoreUnnamedAttributes, isNamesToLowerCase());
-			
+						
 			if (readingIterationsPassed>0) {
 				dumpPages(pagesPerIteration, path, false);
 			} else {
@@ -249,7 +261,7 @@ public class WikiDataExtractor {
 				attributesNormalTotal+=attrsNormal;
 			}
 			pagesPerIteration = null;
-			readingIterationsPassed ++;
+			readingIterationsPassed ++;*/
 			//GCIters++;
 			
 			/*if (GCIters>=GC_ITERATIONS) {

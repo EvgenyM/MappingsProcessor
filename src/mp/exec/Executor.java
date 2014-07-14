@@ -13,6 +13,7 @@ public class Executor {
 					GlobalVariables.Logs);*/
 		//proc.compress4Graph(GlobalVariables.dumpsToJson, GlobalVariables.dumpsToJson4Graph, ILLTypes.Main);
 		//proc.getStatsForGraph(GlobalVariables.dumpsToJson4Graph, GlobalVariables.StatsJson4g);
-		proc.getStatsForRawDumpedData(GlobalVariables.dumpsToJson, GlobalVariables.StatsJsonRaw);
+		//proc.getStatsForRawDumpedData(GlobalVariables.dumpsToJson, GlobalVariables.StatsJsonRaw);
+		proc.getAdditionalILLs(GlobalVariables.wikiData);
 	}
 }
