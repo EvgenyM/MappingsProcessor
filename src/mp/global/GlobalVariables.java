@@ -10,16 +10,19 @@ public class GlobalVariables {
 	public static final boolean IS_DEBUG = true;
 	
 	/**
-	 * Location of WikData file
+	 * Location of WikiILLs file
 	 */
-	public static final String wikiData = "G:/WikiDumps/unzipped/en/enwiki-20140614-langlinks/enwiki-20140614-langlinks.sql";
+	public static final String[] wikiLangLinks = new String[] {"G:/WikiDumps/unzipped/en/enwiki-20140614-langlinks/enwiki-20140614-langlinks.sql"};
 	
-	public static final String wikiDataTransformed = "G:/ills/wikiDataTransformed.txt";
+	/**
+	 * Location of WikiILLs to be stored
+	 */
+	public static final String[] wikiLangLinksTransformed =  new String[] {"G:/wikiDataTransformed.txt"};
 	
 	/**
 	 * Location of extraction process log
 	 */
-	public static String wikiDataExtractionLog = "G:/wikiDataExtractionLog.txt";
+	public static String[] wikiDataExtractionLog =  new String[] {"G:/wikiDataExtractionLog.txt"};
 	
 	/**
 	 * Locations of WikiData files to be processed

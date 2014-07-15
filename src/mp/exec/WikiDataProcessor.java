@@ -37,36 +37,15 @@ public class WikiDataProcessor{
 	
 	public WikiDataProcessor() { }
 	
-
 	/**
 	 * Extracts additional ILLs from the WIkiData
-	 * @param wikidata Path to the WikiData file
+	 * @param wikiILLsPaths Paths to the WikiData file
+	 * @param wikilanglinkstransformed Paths to dump transformed (JSON) WikiLinks to
 	 */
-	public void getAdditionalILLs(String wikidata) {
-		
-		WikiDataExtractor extractor = new WikiDataExtractor(GlobalVariables.wikiData, GlobalVariables.wikiDataExtractionLog);
-		try {
-			extractor.readAndDumpWikidata(GlobalVariables.wikiDataTransformed);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (FileTooLargeException e) {
-			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
+	public void getAdditionalILLs(String[] wikiILLsPaths, String[] wikilanglinkstransformed) {
+		for (int i=0;i<wikiILLsPaths.length;i++) {
+			extactAndDumpExtraILLs(GlobalVariables.wikiLangLinks[i], GlobalVariables.wikiLangLinksTransformed[i]);
 		}
-		extractor = null;
-		/*JsonIOManager fileReader = new JsonIOManager();
-		RawWikiDataParser extractor = RawWikiDataParser.getInstance();
-		try {
-			fileReader.readFromJson(wikidata, extractor, String.class);
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (PageConversionException e) {
-			System.out.println("ILL extraction for " + wikidata + " failed");
-			e.printStackTrace();
-		}*/
 	}
 	
 	/**
@@ -191,6 +170,20 @@ public class WikiDataProcessor{
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
+			e.printStackTrace();
+		}
+		extractor = null;
+	}
+	
+	/**
+	 * Extarcts extra ILLs form an SQL sile and dumps them as JSON
+	 * @param wikiILLsPaths 
+	 */
+	private void extactAndDumpExtraILLs(String wikiILLsPath, String dumpSavePath) {		
+		WikiDataExtractor extractor = new WikiDataExtractor(wikiILLsPath, null);
+		try {
+			extractor.readAndDumpAdditionalILLs(dumpSavePath);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		extractor = null;

@@ -19,6 +19,6 @@ public class Executor {
 		System.gc();
 		proc.getStatsForRawDumpedData(GlobalVariables.dumpsToJson, GlobalVariables.StatsJsonRaw);
 		System.gc();
-		//proc.getAdditionalILLs(GlobalVariables.wikiData);
+		proc.getAdditionalILLs(GlobalVariables.wikiLangLinks, GlobalVariables.wikiLangLinksTransformed);
 	}
 }

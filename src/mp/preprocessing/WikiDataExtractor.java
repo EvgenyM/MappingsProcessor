@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import mp.dataclasses.Infobox;
 import mp.dataclasses.InfoboxAttribute;
+import mp.dataclasses.SQLtoIllWrapper;
 import mp.dataclasses.WikiPage;
 import mp.exceptions.FileTooLargeException;
 import mp.global.GlobalVariables;
@@ -25,7 +26,7 @@ import mp.io.utils.Parser;
 import org.xml.sax.SAXException;
 
 /**
- * 
+ * Provites functionality for data extraction
  * @author Evgeny Mitichkin
  *
  */
@@ -50,6 +51,21 @@ public class WikiDataExtractor {
 		this.logPath = logPath;
 		this.ignoreUnnamedAttributes = false;
 		this.setNamesToLowerCase(false);
+	}
+	
+	/**
+	 * Reads and saves the interlingual links. Parses the SQL file, extracts the table values and puts the into a wrapper.
+	 * @param path Path to save the results to
+	 * @throws IOException 
+	 */
+	public void readAndDumpAdditionalILLs(String path) throws IOException {
+		IllSQLDataParser parser = IllSQLDataParser.getInstance();
+		FileIO.readFileByChunks(mPath, parser);
+		//Dump the links
+		HashMap<Long, SQLtoIllWrapper> parsedLinks = parser.getLangLinkSet();
+		JsonIOManager writer = new JsonIOManager();
+		writer.writeToJson(parsedLinks, path);
+		parser = null;
 	}
 	
 	/**
