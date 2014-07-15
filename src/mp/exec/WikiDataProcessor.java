@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.SSLEngineResult.Status;
 import javax.xml.parsers.ParserConfigurationException;
 
 import mp.dataclasses.ILLTypes;
@@ -23,7 +22,6 @@ import mp.io.JsonIOManager;
 import mp.io.dataclasses.Page4GraphMapEntry;
 import mp.io.dataclasses.PageMapEntry;
 import mp.preprocessing.Infobox4GraphFactory;
-import mp.preprocessing.RawWikiDataParser;
 import mp.preprocessing.StatisticsFactory;
 import mp.preprocessing.WikiDataExtractor;
 
