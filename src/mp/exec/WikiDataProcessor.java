@@ -123,6 +123,7 @@ public class WikiDataProcessor{
 			HashMap<String, WikiPage4Graph> wikiData4Graph = retrieveDumpedPages(inputDataPaths[i], Page4GraphMapEntry.class);
 			getStatistics4Graph(wikiData4Graph, statisticsDumpPath[i]);
 			wikiData4Graph = null;
+			System.gc();
 		}
 	}
 	
@@ -152,6 +153,7 @@ public class WikiDataProcessor{
 			dumpPages(converter.getmPageSet(), transformedDataDumpPath[i]);
 			//Release resources
 			converter = null;
+			System.gc();
 		}
 	}
 	
@@ -163,8 +165,10 @@ public class WikiDataProcessor{
 	public void makeETL(String[] rawDataPaths, String[] transformedDataDumpPath, String[] statisticsDumpPath, String[] logPaths) {
 		for (int i=0;i<rawDataPaths.length;i++){
 			extractAndDumpPages(rawDataPaths[i], transformedDataDumpPath[i], logPaths[i]);			
+			System.gc();
 			HashMap<String, WikiPage> wikiData = retrieveDumpedPages(transformedDataDumpPath[i], PageMapEntry.class);
 			getStatistics(wikiData, statisticsDumpPath[i]);
+			System.gc();
 		}
 	}
 	

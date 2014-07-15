@@ -22,7 +22,7 @@ public class Converter {
 	private static final String pageEndTag = "</page>";
 	private static final String titleBeginTag = "<title";
 	private static final String titleEndTag = "</title>";
-	private static final String idBeginTag = "<id>";
+	private static final String idBeginTag = "<id";
 	private static final String idEndTag = "</id>";
 	public static final String dumpPath = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/dump.txt";
 	
@@ -82,8 +82,13 @@ public class Converter {
 	 */
 	private static WikiPage getWikiPage(String pageData, boolean ignoreUnnamedAttributes, boolean isNamesToLowerCase) {
 		
+		long pageId = -1;				
 		//PAGE ID
-		long pageId = Long.parseLong(Parser.getContents(pageData, idBeginTag, idEndTag).get(0));
+		try {
+			pageId = Long.parseLong(Parser.getContents(pageData, idBeginTag, idEndTag).get(0));
+		} catch (NumberFormatException ex) { 
+			ex.printStackTrace();
+		}
 		
 		//PAGE TITLE
 		String pageTitle = Parser.getContents(pageData, titleBeginTag, titleEndTag).get(0);

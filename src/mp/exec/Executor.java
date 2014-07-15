@@ -13,7 +13,7 @@ public class Executor {
 					GlobalVariables.StatsJson,
 					GlobalVariables.Logs);
 		System.gc();
-		proc.compress4Graph(GlobalVariables.dumpsToJson, GlobalVariables.dumpsToJson4Graph, ILLTypes.Main);
+		proc.compress4Graph(GlobalVariables.dumpsToJson, GlobalVariables.dumpsToJson4Graph, ILLTypes.NoFilter);
 		System.gc();
 		proc.getStatsForGraph(GlobalVariables.dumpsToJson4Graph, GlobalVariables.StatsJson4g);
 		System.gc();

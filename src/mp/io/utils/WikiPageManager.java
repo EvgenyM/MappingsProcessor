@@ -70,54 +70,67 @@ public class WikiPageManager {
 	 */
 	private boolean isPageValid(ILLTypes selectorType, WikiPage wikiPage) {
 		boolean res = false;
-		if (selectorType.equals(ILLTypes.Main)) {
-			for (WikiLink lnk : wikiPage.getILLs().values()) {
-				if (lnk.isInitialized()) {
-					res = true;
-					break;
+		if (selectorType.equals(ILLTypes.NoFilter)) {
+			res = true;
+		} else {
+			if (selectorType.equals(ILLTypes.MainOrNone)) {
+				for (WikiLink lnk : wikiPage.getILLs().values()) {
+					if (!lnk.isFeatured() && !lnk.isGood()) {
+						res = true;
+						break;
+					}
+				}
+			}
+			if (selectorType.equals(ILLTypes.Main)) {
+				for (WikiLink lnk : wikiPage.getILLs().values()) {
+					if (lnk.isInitialized()) {
+						res = true;
+						break;
+					}
+				}
+			}
+			if (selectorType.equals(ILLTypes.Additional)) {
+				for (WikiLink lnk : wikiPage.getILLs().values()) {
+					if (lnk.isGood() || lnk.isFeatured()) {
+						res = true;
+						break;
+					}
+				}
+			}
+			if (selectorType.equals(ILLTypes.All)) {
+				for (WikiLink lnk : wikiPage.getILLs().values()) {
+					if (lnk.isFeatured() || lnk.isGood() || lnk.isInitialized()) {
+						res = true;
+						break;
+					}
+				}
+			}
+			if (selectorType.equals(ILLTypes.Featured)) {
+				for (WikiLink lnk : wikiPage.getILLs().values()) {
+					if (lnk.isFeatured()) {
+						res = true;
+						break;
+					}
+				}
+			}
+			if (selectorType.equals(ILLTypes.Good)) {
+				for (WikiLink lnk : wikiPage.getILLs().values()) {
+					if (lnk.isGood()) {
+						res = true;
+						break;
+					}
+				}
+			}
+			if (selectorType.equals(ILLTypes.None)) {
+				for (WikiLink lnk : wikiPage.getILLs().values()) {
+					if (!lnk.isInitialized() && !lnk.isFeatured() && !lnk.isGood()) {
+						res = true;
+						break;
+					}
 				}
 			}
 		}
-		if (selectorType.equals(ILLTypes.Additional)) {
-			for (WikiLink lnk : wikiPage.getILLs().values()) {
-				if (lnk.isGood() || lnk.isFeatured()) {
-					res = true;
-					break;
-				}
-			}
-		}
-		if (selectorType.equals(ILLTypes.All)) {
-			for (WikiLink lnk : wikiPage.getILLs().values()) {
-				if (lnk.isFeatured() || lnk.isGood() || lnk.isInitialized()) {
-					res = true;
-					break;
-				}
-			}
-		}
-		if (selectorType.equals(ILLTypes.Featured)) {
-			for (WikiLink lnk : wikiPage.getILLs().values()) {
-				if (lnk.isFeatured()) {
-					res = true;
-					break;
-				}
-			}
-		}
-		if (selectorType.equals(ILLTypes.Good)) {
-			for (WikiLink lnk : wikiPage.getILLs().values()) {
-				if (lnk.isGood()) {
-					res = true;
-					break;
-				}
-			}
-		}
-		if (selectorType.equals(ILLTypes.None)) {
-			for (WikiLink lnk : wikiPage.getILLs().values()) {
-				if (!lnk.isInitialized() && !lnk.isFeatured() && !lnk.isGood()) {
-					res = true;
-					break;
-				}
-			}
-		}
+		
 		return res;
 	}
 }
