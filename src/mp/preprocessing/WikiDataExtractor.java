@@ -43,7 +43,7 @@ public class WikiDataExtractor {
 	private boolean ignoreUnnamedAttributes;
 	private boolean namesToLowerCase;
 	
-	public static final int chunkSize = 1024*1024*1;//100 MBytes
+	public static final int chunkSize = 1024*1024*10;//10 MBytes
 	
 	public WikiDataExtractor(String path, String logPath) {
 		this.mPath = path;
