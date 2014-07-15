@@ -22,6 +22,8 @@ public class Converter {
 	private static final String pageEndTag = "</page>";
 	private static final String titleBeginTag = "<title";
 	private static final String titleEndTag = "</title>";
+	private static final String idBeginTag = "<id>";
+	private static final String idEndTag = "</id>";
 	public static final String dumpPath = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/dump.txt";
 	
 	/**
@@ -80,6 +82,9 @@ public class Converter {
 	 */
 	private static WikiPage getWikiPage(String pageData, boolean ignoreUnnamedAttributes, boolean isNamesToLowerCase) {
 		
+		//PAGE ID
+		long pageId = Long.parseLong(Parser.getContents(pageData, idBeginTag, idEndTag).get(0));
+		
 		//PAGE TITLE
 		String pageTitle = Parser.getContents(pageData, titleBeginTag, titleEndTag).get(0);
 		
@@ -110,6 +115,7 @@ public class Converter {
 		
 		WikiPage page = new WikiPage(box, ILLSet);	
 		page.setPageTitle(pageTitle);
+		page.setPageId(pageId);
 
 		extractedChunk = null;
 		pageData = null;

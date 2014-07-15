@@ -38,26 +38,26 @@ public class GlobalVariables {
 	 * Locations of processed dumps of WikiData
 	 */
 	public static final String[] dumpsToJson = new String[] {
-		"G:/WikiMappingsOutput/Raw extracted data/Wiki EN/EN_PagesAsJson.txt",
-		"G:/WikiMappingsOutput/Raw extracted data/Wiki DE/DE_PagesAsJson.txt",
-		"G:/WikiMappingsOutput/Raw extracted data/Wiki FR/FR_PagesAsJson.txt",
-		"G:/WikiMappingsOutput/Raw extracted data/Wiki NL/NL_PagesAsJson.txt",
-		"G:/WikiMappingsOutput/Raw extracted data/Wiki ES/ES_PagesAsJson.txt",
-		"G:/WikiMappingsOutput/Raw extracted data/Wiki RU/RU_PagesAsJson.txt",
-		"G:/WikiMappingsOutput/Raw extracted data/Wiki IT/IT_PagesAsJson.txt"
+		"G:/WikiMappingsOutput/Raw extracted data/Wiki EN/withIDs/EN_PagesAsJson.txt",
+		"G:/WikiMappingsOutput/Raw extracted data/Wiki DE/withIDs/DE_PagesAsJson.txt",
+		"G:/WikiMappingsOutput/Raw extracted data/Wiki FR/withIDs/FR_PagesAsJson.txt",
+		"G:/WikiMappingsOutput/Raw extracted data/Wiki NL/withIDs/NL_PagesAsJson.txt",
+		"G:/WikiMappingsOutput/Raw extracted data/Wiki ES/withIDs/ES_PagesAsJson.txt",
+		"G:/WikiMappingsOutput/Raw extracted data/Wiki RU/withIDs/RU_PagesAsJson.txt",
+		"G:/WikiMappingsOutput/Raw extracted data/Wiki IT/withIDs/IT_PagesAsJson.txt"
 		};
 	
 	/**
 	 * Locations Graph-ready data
 	 */
 	public static final String[] dumpsToJson4Graph = new String[] {
-		"G:/WikiMappingsOutput/Graph-ready data/EN_PagesAsJson4Graph.json4g",
-		"G:/WikiMappingsOutput/Graph-ready data/DE_PagesAsJson4Graph.json4g",
-		"G:/WikiMappingsOutput/Graph-ready data/FR_PagesAsJson4Graph.json4g",
-		"G:/WikiMappingsOutput/Graph-ready data/NL_PagesAsJson4Graph.json4g",
-		"G:/WikiMappingsOutput/Graph-ready data/ES_PagesAsJson4Graph.json4g",
-		"G:/WikiMappingsOutput/Graph-ready data/RU_PagesAsJson4Graph.json4g",
-		"G:/WikiMappingsOutput/Graph-ready data/IT_PagesAsJson4Graph.json4g"
+		"G:/WikiMappingsOutput/Graph-ready data/withIDs/EN_PagesAsJson4Graph.json4g",
+		"G:/WikiMappingsOutput/Graph-ready data/withIDs/DE_PagesAsJson4Graph.json4g",
+		"G:/WikiMappingsOutput/Graph-ready data/withIDs/FR_PagesAsJson4Graph.json4g",
+		"G:/WikiMappingsOutput/Graph-ready data/withIDs/NL_PagesAsJson4Graph.json4g",
+		"G:/WikiMappingsOutput/Graph-ready data/withIDs/ES_PagesAsJson4Graph.json4g",
+		"G:/WikiMappingsOutput/Graph-ready data/withIDs/RU_PagesAsJson4Graph.json4g",
+		"G:/WikiMappingsOutput/Graph-ready data/withIDs/IT_PagesAsJson4Graph.json4g"
 		};
 	
 	/**

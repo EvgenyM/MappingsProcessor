@@ -186,7 +186,7 @@ public class WikiDataExtractor {
 			String wikiDataAsString = new String(bb.array(), "UTF-8");
 			bb.clear();
 			
-			/*//Adding the last chunk that was not properly processed
+			//Adding the last chunk that was not properly processed
 			if (readingIterationsPassed>0) {
 				StringBuilder wikiStr = new StringBuilder();
 				wikiStr.append(remainderString);
@@ -199,8 +199,9 @@ public class WikiDataExtractor {
 			//Calculate the index of the closing tag of last complete page to be extracted in a chunk
 			int lastCompletePageEndingIndex = wikiDataAsString.lastIndexOf(pageEndTag) + pageEndTag.length();
 			remainderString = wikiDataAsString.substring(lastCompletePageEndingIndex, wikiDataAsString.length());
-			wikiDataAsString = wikiDataAsString.substring(0, lastCompletePageEndingIndex);*/
-			int reps = readingIterationsPassed/4;
+			wikiDataAsString = wikiDataAsString.substring(0, lastCompletePageEndingIndex);
+			//FileIO.writeToFile(path, wikiDataAsString, true);
+			/*int reps = readingIterationsPassed/4;
 			if (readingIterationsPassed>0) {
 				//wikiDataAsString = Parser.completeChunk(wikiDataAsString, true);
 				FileIO.writeToFile(path+reps+".txt", wikiDataAsString, true);
@@ -210,9 +211,9 @@ public class WikiDataExtractor {
 				FileIO.writeToFile(path+reps+".txt", wikiDataAsString, false);
 				//dumpPages(wikiDataAsString, path, true);
 			}
-			readingIterationsPassed++;
+			readingIterationsPassed++;*/
 			
-			/*if (readingIterationsPassed>0) {
+			if (readingIterationsPassed>0) {
 				wikiDataAsString = Parser.completeChunk(wikiDataAsString, true);
 			} else {
 				wikiDataAsString = Parser.completeChunk(wikiDataAsString, false);
@@ -261,7 +262,7 @@ public class WikiDataExtractor {
 				attributesNormalTotal+=attrsNormal;
 			}
 			pagesPerIteration = null;
-			readingIterationsPassed ++;*/
+			readingIterationsPassed ++;
 			//GCIters++;
 			
 			/*if (GCIters>=GC_ITERATIONS) {

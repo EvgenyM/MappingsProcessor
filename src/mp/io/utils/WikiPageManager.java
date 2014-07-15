@@ -39,6 +39,7 @@ public class WikiPageManager {
 		page4g.setInfoboxClass(page.getInfobox().getInfoboxClass());
 		page4g.setNumberOfAttributes(page.getInfobox().getAttributes().size());
 		page4g.setILLs(page.getILLs());
+		page4g.setPageId(page.getPageId());
 		
 		return page4g;
 	}

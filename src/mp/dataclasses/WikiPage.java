@@ -12,6 +12,7 @@ public class WikiPage extends WikiPageBase{
 
 	private String pageTitle;
 	private Infobox infobox;
+	private long pageId;
 	private HashMap<String, WikiLink> ILLs;
 	
 	public WikiPage(Infobox infobox, HashMap<String, WikiLink> ILLs) {
@@ -69,5 +70,13 @@ public class WikiPage extends WikiPageBase{
 		}
 		res.append("*****END*****");
 		return res.toString();
+	}
+
+	public long getPageId() {
+		return pageId;
+	}
+
+	public void setPageId(long pageId) {
+		this.pageId = pageId;
 	}
 }

@@ -6,5 +6,6 @@ public abstract class WikiPageBase {
 	
 	private transient String pageTitle;
 	private transient HashMap<String, WikiLink> ILLs;
+	private transient long pageId;
 	
 }

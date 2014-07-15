@@ -13,16 +13,18 @@ public class WikiPage4Graph extends WikiPageBase {
 	private HashMap<String, WikiLink> ILLs;//Should keep only the ILLs among the language space
 	private String infoboxClass;
 	private int numberOfAttributes;
+	private long pageId;
 	
 	public WikiPage4Graph() {
 		
 	}
 	
-	public WikiPage4Graph(String title, HashMap<String, WikiLink> ILLs, String infoboxClass, int numberOfAttributes) {
+	public WikiPage4Graph(String title, HashMap<String, WikiLink> ILLs, String infoboxClass, int numberOfAttributes, long pageId) {
 		this.pageTitle = title;
 		this.ILLs = ILLs;
 		this.infoboxClass = infoboxClass;
 		this.numberOfAttributes = numberOfAttributes;
+		this.pageId = pageId;
 	}
 	
 	/**
@@ -215,5 +217,13 @@ public class WikiPage4Graph extends WikiPageBase {
 	}
 	public void setNumberOfAttributes(int numberOfAttributes) {
 		this.numberOfAttributes = numberOfAttributes;
+	}
+
+	public long getPageId() {
+		return pageId;
+	}
+
+	public void setPageId(long pageId) {
+		this.pageId = pageId;
 	}
 }
