@@ -31,7 +31,7 @@ public class IllSQLDataParser implements FileIONotifier {
 	public void onChunkRead(String[] str) {
 		try {
 			for (int i=0;i<str.length;i++) {
-				getLangLinkSet().putAll(parseLine(str[i]));
+				parseLine(str[i]);
 			}	
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -39,62 +39,64 @@ public class IllSQLDataParser implements FileIONotifier {
 	}
 	
 	/**
-	 * Parses the "INSERT INTO" string
+	 * Parses the "INSERT INTO" string and puts new values into the {@code langLinkSet}
 	 * @param line
 	 * @return
 	 */
-	private HashMap<Long, SQLtoIllWrapper> parseLine(String line) {
-		HashMap<Long, SQLtoIllWrapper> result = new HashMap<Long, SQLtoIllWrapper>();
+	private void parseLine(String line) {
 		int idx = line.indexOf(SQL_VALUES);
 		if (idx>0) {
 			String strToSplit = line.substring(idx, line.length()-1);
 			String[] els = strToSplit.split("\\),\\(");
 			for (int i=0;i<els.length;i++) {
-				if (i!=els.length-1){
+				if (i!=els.length-1) {
 					if (i==0) {
 						els[i] = els[i].substring(SQL_VALUES.length()).trim();
 						els[i] = els[i].substring(1);
 					}
-					String[] oneEl = els[i].split(",");
-					for (int j=0;j<oneEl.length;j++) {
-						oneEl[j] = oneEl[j].replaceAll("'", "");
-					}				
-					try {
-						SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
-						wrapper.setId(Long.parseLong(oneEl[0]));
-						/*if (oneEl[1].equals(""))
-							oneEl[1] = "NAN";*/
-						wrapper.setLang(oneEl[1]);
-						/*if (oneEl[2].equals(""))
-							oneEl[2] = "NAN";*/
-						wrapper.setTitle(oneEl[2]);
-						result.put(wrapper.getId(), wrapper);
-					} catch (Exception parsingException) {
-						parsingException.printStackTrace();
-					}							
+					addToLangLinkSet(els[i]);						
 				} else {
 					String el = els[i].substring(0, els[i].length()-1);
-					String[] oneEl = el.split(",");
-					for (int j=0;j<oneEl.length;j++) {
-						oneEl[j] = oneEl[j].replaceAll("'", "");
-					}
-					try {
-						SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
-						wrapper.setId(Long.parseLong(oneEl[0]));
-						/*if (oneEl[1].equals(""))
-							oneEl[1] = "NAN";*/
-						wrapper.setLang(oneEl[1]);
-						/*if (oneEl[2].equals(""))
-							oneEl[2] = "NAN";*/
-						wrapper.setTitle(oneEl[2]);
-						result.put(wrapper.getId(), wrapper);
-					} catch (Exception parsingException) {
-						parsingException.printStackTrace();
-					}
+					addToLangLinkSet(els[i]);					
 				}
 			}
-		} 	
-		return result;		
+		} 			
+	}
+	
+	/**
+	 * Prepares a wrapped representation of ILL extracted from SQL	
+	 * @param element
+	 * @return
+	 */
+	private SQLtoIllWrapper getWrappedObject(String[] element) {
+		SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
+		wrapper.setId(Long.parseLong(element[0]));
+		wrapper.getLangTitleCorrespondence().put(element[1], element[2]);
+		return wrapper;
+	}
+	
+	/**
+	 * Extracts an ILL from an SQL string and checks whether it already exists in the resulting {@link HashMap}
+	 * If it exists, the methods updates the fields of {@link SQLtoIllWrapper} objects,
+	 * otherwise creates a new object and adds it to the resulting {@link HashMap}
+	 */
+	private void addToLangLinkSet(String element) {
+		String[] oneEl = element.split(",");
+		for (int j=0;j<oneEl.length;j++) {
+			oneEl[j] = oneEl[j].replaceAll("'", "");
+		}				
+		try {
+			long pageKey = Long.parseLong(oneEl[0]);
+			SQLtoIllWrapper wrapper = langLinkSet.get(pageKey);
+			if (wrapper!= null) {
+				wrapper.getLangTitleCorrespondence().put(oneEl[1], oneEl[2]);
+			} else {
+				wrapper = getWrappedObject(oneEl);							
+			}
+			langLinkSet.put(wrapper.getId(), wrapper);
+		} catch (Exception parsingException) {
+			parsingException.printStackTrace();
+		}	
 	}
 
 	public HashMap<Long, SQLtoIllWrapper> getLangLinkSet() {

@@ -47,7 +47,24 @@ public class WikiDataProcessor{
 	 * @param IllData
 	 * @param mergedDataDump
 	 */
-	private void mergeAndDump4Graph(String graphData, String IllData, String mergedDataDump) {
+	private void mergeAndDump4Graph(String graphDataPath, String IllDataPath, String mergedDataDump) {
+		ObjectConverter conv = new ObjectConverter();
+		HashMap<String, WikiPage4Graph> graphData = conv.getAsHashMap(graphDataPath, Page4GraphMapEntry.class);//Reading the graph data. Could cause out of memory exception.
+		HashMap<Long, SQLtoIllWrapper> newIlls = conv.getAsHashMap(IllDataPath, IllWrapperMapEntry.class);//Reading ILL data from the current language to other languages.
+		/*
+		 * For each article we find the ILLs which match it by the ID.
+		 */
+		for (WikiPage4Graph wikiPage : graphData.values()) {
+			try {
+				long pageId = wikiPage.getPageId();
+				SQLtoIllWrapper illSet = newIlls.get(pageId);
+				//Add ILLs to the WikiPage
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		
 		
 	}
 	
@@ -274,7 +291,7 @@ public class WikiDataProcessor{
 	 * @param dumpStats
 	 */
 	private <V> void getStatistics4Graph(HashMap<String, V> wikiData, String dumpStats) {
-		WikiDataStatistics<V> stats = new WikiDataStatistics<>(wikiData);
+		WikiDataStatistics<V> stats = new WikiDataStatistics<V>(wikiData);
 		HashMap<String, Integer> ibxStats = stats.getInfoboxStatistics();
 		String path1 = dumpStats + "StatsIbox4g.csv";
 		StringBuilder bldr = new StringBuilder();
@@ -320,23 +337,25 @@ public class WikiDataProcessor{
 		ObjectConverter conv = new ObjectConverter();
 		HashMap<Long, SQLtoIllWrapper> ills = conv.getAsHashMap(readPath, IllWrapperMapEntry.class);
 		
-		//Filter the links
+		//Filter the links. If title is not empty and language matches --> add it
 		if (GlobalVariables.IS_DEBUG)
 			System.out.println("Filtering ILLs for started at: " + new Timestamp(date.getTime()));
 		for (Map.Entry<Long, SQLtoIllWrapper> ill : ills.entrySet()) {
-			SQLtoIllWrapper illObj = (SQLtoIllWrapper) ill.getValue();
-			//Language match
-			boolean langMatch = false;
+			SQLtoIllWrapper illObj = ill.getValue();//The object being analyzed
+			SQLtoIllWrapper illObjCandidate = new SQLtoIllWrapper();//The object to be written, with reduced number of language links
+			illObjCandidate.setId(illObj.getId());
+		
 			for (int i=0;i<GlobalVariables.allowedLanguages.length;i++) {
-				if (illObj.getLang().equals(GlobalVariables.allowedLanguages[i])) {
-					langMatch = true;
-					break;
-				}					
+				if (illObj.getLangTitleCorrespondence().containsKey(GlobalVariables.allowedLanguages[i])) {
+					if (!illObj.getLangTitleCorrespondence().get(GlobalVariables.allowedLanguages[i]).equals("")) {
+						illObjCandidate.getLangTitleCorrespondence().put(GlobalVariables.allowedLanguages[i], 
+								illObj.getLangTitleCorrespondence().get(GlobalVariables.allowedLanguages[i]));
+					}
+				}
 			}
-			//If title is not empty and lang mathces --> add it
-			if (langMatch && !illObj.getTitle().equals("")) {
-				result.put(illObj.getId(), illObj);
-			}			
+			if (illObjCandidate.getLangTitleCorrespondence().size()>0) {
+				result.put(illObjCandidate.getId(), illObjCandidate);
+			}
 		}
 		
 		//Dump the result		

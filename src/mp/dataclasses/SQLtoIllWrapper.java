@@ -1,5 +1,7 @@
 package mp.dataclasses;
 
+import java.util.HashMap;
+
 /**
  * Wrapper class for handling SQL to ILL instance
  * @author Evgeny Mitichkin
@@ -8,17 +10,15 @@ package mp.dataclasses;
 public class SQLtoIllWrapper {
 	
 	private long id;
-	private String lang;
-	private String title;
+	private HashMap<String, String> langTitleCorrespondence = new HashMap<String, String>(3);//Language is the key, title is the value
 	
 	public SQLtoIllWrapper() {
 		
 	}
 	
-	public SQLtoIllWrapper(long id, String lang, String title) {
+	public SQLtoIllWrapper(long id, HashMap<String, String> langTitleCorrespondence) {
 		this.id = id;
-		this.lang = lang;
-		this.title = title;
+		this.setLangTitleCorrespondence(langTitleCorrespondence);
 	}
 	
 	public long getId() {
@@ -27,17 +27,12 @@ public class SQLtoIllWrapper {
 	public void setId(long id) {
 		this.id = id;
 	}
-	public String getLang() {
-		return lang;
-	}
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
-	public String getTitle() {
-		return title;
-	}
-	public void setTitle(String title) {
-		this.title = title;
+
+	public HashMap<String, String> getLangTitleCorrespondence() {
+		return langTitleCorrespondence;
 	}
 
+	public void setLangTitleCorrespondence(HashMap<String, String> langTitleCorrespondence) {
+		this.langTitleCorrespondence = langTitleCorrespondence;
+	}
 }
