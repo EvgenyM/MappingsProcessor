@@ -68,6 +68,7 @@ public class WikiDataExtractor {
 		//release resources
 		parser = null;
 		writer = null;
+		System.gc();
 	}
 	
 	/**

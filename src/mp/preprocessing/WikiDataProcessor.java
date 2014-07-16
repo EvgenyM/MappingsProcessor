@@ -357,10 +357,11 @@ public class WikiDataProcessor{
 			System.out.println("Dumping ILL filtering result started at: " + new Timestamp(date.getTime()));
 		dumpPages(result, dumpWritePath);
 		if (GlobalVariables.IS_DEBUG)
-			System.out.println("Dumping fintered ILLs for: "+readPath+" finished at: " + new Timestamp(date.getTime()));
+			System.out.println("Dumping filtered ILLs for: "+readPath+" finished at: " + new Timestamp(date.getTime()));
 		
 		//Release resources
 		result = null;
 		ills = null;
+		System.gc();
 	}
 }
