@@ -65,7 +65,9 @@ public class WikiDataExtractor {
 		HashMap<Long, SQLtoIllWrapper> parsedLinks = parser.getLangLinkSet();
 		JsonIOManager writer = new JsonIOManager();
 		writer.writeToJson(parsedLinks, path);
+		//release resources
 		parser = null;
+		writer = null;
 	}
 	
 	/**

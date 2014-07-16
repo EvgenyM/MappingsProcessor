@@ -1,4 +1,4 @@
-package mp.exec;
+package mp.preprocessing;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,9 +21,6 @@ import mp.io.FileIO;
 import mp.io.JsonIOManager;
 import mp.io.dataclasses.Page4GraphMapEntry;
 import mp.io.dataclasses.PageMapEntry;
-import mp.preprocessing.Infobox4GraphFactory;
-import mp.preprocessing.StatisticsFactory;
-import mp.preprocessing.WikiDataExtractor;
 
 import org.xml.sax.SAXException;
 

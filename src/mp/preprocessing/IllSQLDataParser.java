@@ -7,7 +7,7 @@ import mp.io.FileIONotifier;
 
 /**
  * Parses the raw WikiData file (from the WikiData projects) and searches for ILLs in it.
- * @author EG
+ * @author Evgeny Mitichkin
  *
  */
 public class IllSQLDataParser implements FileIONotifier {
@@ -45,40 +45,51 @@ public class IllSQLDataParser implements FileIONotifier {
 	 */
 	private HashMap<Long, SQLtoIllWrapper> parseLine(String line) {
 		HashMap<Long, SQLtoIllWrapper> result = new HashMap<Long, SQLtoIllWrapper>();
-		String strToSplit = line.substring(line.indexOf(SQL_VALUES), line.length()-1);
-		String[] els = strToSplit.split("),(");
-		for (int i=0;i<els.length;i++) {
-			if (i!=els.length-1){
-				String[] oneEl = els[i].split(",");
-				for (int j=0;j<oneEl.length;j++) {
-					oneEl[j] = oneEl[j].replaceAll("'", "");
-				}				
-				try {
-					SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
-					wrapper.setId(Long.parseLong(oneEl[0]));
-					wrapper.setLang(oneEl[1]);
-					wrapper.setLang(oneEl[2]);
-					getLangLinkSet().put(wrapper.getId(), wrapper);
-				} catch (Exception parsingException) {
-					parsingException.printStackTrace();
-				}							
-			} else {
-				String el = els[i].substring(0, els[i].length()-2);
-				String[] oneEl = el.split(",");
-				for (int j=0;j<oneEl.length;j++) {
-					oneEl[j] = oneEl[j].replaceAll("'", "");
-				}
-				try {
-					SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
-					wrapper.setId(Long.parseLong(oneEl[0]));
-					wrapper.setLang(oneEl[1]);
-					wrapper.setLang(oneEl[2]);
-					getLangLinkSet().put(wrapper.getId(), wrapper);
-				} catch (Exception parsingException) {
-					parsingException.printStackTrace();
+		int idx = line.indexOf(SQL_VALUES);
+		if (idx>0) {
+			String strToSplit = line.substring(idx, line.length()-1);
+			String[] els = strToSplit.split("\\),\\(");
+			for (int i=0;i<els.length;i++) {
+				if (i!=els.length-1){
+					if (i==0) {
+						els[i] = els[i].substring(SQL_VALUES.length()).trim();
+						els[i] = els[i].substring(1);
+					}
+					String[] oneEl = els[i].split(",");
+					for (int j=0;j<oneEl.length;j++) {
+						oneEl[j] = oneEl[j].replaceAll("'", "");
+					}				
+					try {
+						SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
+						wrapper.setId(Long.parseLong(oneEl[0]));
+						wrapper.setLang(oneEl[1]);
+						if (oneEl[2].equals(""))
+							oneEl[2] = "NAN";
+						wrapper.setLang(oneEl[2]);
+						result.put(wrapper.getId(), wrapper);
+					} catch (Exception parsingException) {
+						parsingException.printStackTrace();
+					}							
+				} else {
+					String el = els[i].substring(0, els[i].length()-1);
+					String[] oneEl = el.split(",");
+					for (int j=0;j<oneEl.length;j++) {
+						oneEl[j] = oneEl[j].replaceAll("'", "");
+					}
+					try {
+						SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
+						wrapper.setId(Long.parseLong(oneEl[0]));
+						wrapper.setLang(oneEl[1]);
+						if (oneEl[2].equals(""))
+							oneEl[2] = "NAN";
+						wrapper.setLang(oneEl[2]);
+						result.put(wrapper.getId(), wrapper);
+					} catch (Exception parsingException) {
+						parsingException.printStackTrace();
+					}
 				}
 			}
-		}
+		} 	
 		return result;		
 	}
 

@@ -45,10 +45,21 @@ public class FileIO {
 				}
 				readingCounter = 0;
 				readingIterationsPassed++;
+				//Log
+				System.out.println("Lines read: " +linesTotal);
 			}	
 		}
 		//Pass the last results
-		caller.onChunkRead(readBuffer);		
+		int num = 0;
+		for (int i=0;i<readBuffer.length;i++) {
+			if (readBuffer[i]!=null)
+				num++;
+		}
+		String[] bufRemainder = new String[num];
+		for (int i=0;i<bufRemainder.length;i++) {
+			bufRemainder[i] = readBuffer[i];
+		}
+		caller.onChunkRead(bufRemainder);		
 				
 		if (GlobalVariables.IS_DEBUG) {
 			java.util.Date date= new java.util.Date();
