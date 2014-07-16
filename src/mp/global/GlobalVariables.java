@@ -20,6 +20,11 @@ public class GlobalVariables {
 	public static final String[] wikiLangLinksTransformed =  new String[] {"G:/wikiDataTransformed.txt"};
 	
 	/**
+	 * Location of WikiILLs to be stored
+	 */
+	public static final String[] wikiLangLinksFiltered =  new String[] {"G:/wikiDataFiltered.txt"};
+	
+	/**
 	 * Location of extraction process log
 	 */
 	public static String[] wikiDataExtractionLog =  new String[] {"G:/wikiDataExtractionLog.txt"};
@@ -114,4 +119,13 @@ public class GlobalVariables {
 		"G:/WikiMappingsOutput/Logs/RU_log.txt",
 		"G:/WikiMappingsOutput/Logs/IT_log.txt"
 		};	
+	
+	/**
+	 * Language editions used in the analysis. This value is used in filtering.
+	 */
+	public static final String[] allowedLanguages = new String[] {
+		"en",
+		"de",
+		"fr",
+		"nl" };	
 }

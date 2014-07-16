@@ -11,6 +11,7 @@ import mp.dataclasses.ILLTypes;
 import mp.dataclasses.Infobox;
 import mp.dataclasses.InfoboxSetStatistics;
 import mp.dataclasses.RawItemStatistics;
+import mp.dataclasses.SQLtoIllWrapper;
 import mp.dataclasses.WikiDataStatistics;
 import mp.dataclasses.WikiPage;
 import mp.dataclasses.WikiPage4Graph;
@@ -19,6 +20,7 @@ import mp.exceptions.PageConversionException;
 import mp.global.GlobalVariables;
 import mp.io.FileIO;
 import mp.io.JsonIOManager;
+import mp.io.dataclasses.IllWrapperMapEntry;
 import mp.io.dataclasses.Page4GraphMapEntry;
 import mp.io.dataclasses.PageMapEntry;
 import mp.preprocessing.utils.Infobox4GraphFactory;
@@ -36,6 +38,17 @@ import org.xml.sax.SAXException;
 public class WikiDataProcessor{
 	
 	public WikiDataProcessor() { }
+	
+	/**
+	 * Reads additional ILLs from a serialized JSON, selects only a subset of languages, and dumps the result
+	 * @param readPaths path to the serialized (JSON) ILLs
+	 * @param dumpWritePaths path to write the filtered result to
+	 */
+	public void filterAdditionalILLs(String[] readPaths, String[] dumpWritePaths) {
+		for (int i=0;i<readPaths.length;i++) {
+			filterAdditionalILLsAndDump(readPaths[i], dumpWritePaths[i]);
+		}
+	}
 	
 	/**
 	 * Extracts additional ILLs from the WIkiData
@@ -302,4 +315,41 @@ public class WikiDataProcessor{
 		System.out.println("Done");
 		stats = null;
 	}	
+	
+	/**
+	 * Reads additional ILLs from a serialized JSON, selects only a subset of languages, and dumps the result
+	 * @param path
+	 * 
+	 * @return
+	 */
+	private void filterAdditionalILLsAndDump(String readPath, String dumpWritePath) {
+		HashMap<Long, SQLtoIllWrapper> result = new HashMap<Long, SQLtoIllWrapper>();
+		//Retrieve the links
+		HashMap<Long, SQLtoIllWrapper> ills = retrieveDumpedPages(readPath, IllWrapperMapEntry.class);
+		
+		//Filter the links
+		for (Map.Entry<Long, SQLtoIllWrapper> ill : ills.entrySet()) {
+			SQLtoIllWrapper illObj = (SQLtoIllWrapper) ill.getValue();
+			//Language match
+			boolean langMatch = false;
+			for (int i=0;i<GlobalVariables.allowedLanguages.length;i++) {
+				if (illObj.getLang().equals(GlobalVariables.allowedLanguages[i])) {
+					langMatch = true;
+					break;
+				}					
+			}
+			//If title is not empty and lang mathces --> add it
+			if (langMatch && !illObj.getTitle().equals("")) {
+				result.put(illObj.getId(), illObj);
+			}			
+		}
+		
+		//Dump the result		
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Dumping ILL filtering result...");
+		dumpPages(result, dumpWritePath);
+		//Release resources
+		result = null;
+		ills = null;
+	}
 }
