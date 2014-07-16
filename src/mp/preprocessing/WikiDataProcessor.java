@@ -115,7 +115,7 @@ public class WikiDataProcessor{
 			Infobox4GraphFactory converter = Infobox4GraphFactory.getInstance();
 			converter.setSelectorType(selectionType);
 			try {
-				fileReader.readFromJson(transformedDataPath[i], converter, Page4GraphMapEntry.class);
+				fileReader.readFromJson(transformedDataPath[i], converter, PageMapEntry.class);
 			} catch (IOException e) {
 				e.printStackTrace();
 			} catch (PageConversionException e) {
