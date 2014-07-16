@@ -12,17 +12,32 @@ public class GlobalVariables {
 	/**
 	 * Location of WikiILLs file
 	 */
-	public static final String[] wikiLangLinks = new String[] {"G:/WikiDumps/unzipped/en/enwiki-20140614-langlinks/enwiki-20140614-langlinks.sql"};
+	public static final String[] wikiLangLinks = new String[] {
+		"G:/WikiDumps/unzipped/en/enwiki-20140614-langlinks/enwiki-20140614-langlinks.sql",
+		"G:/WikiDumps/unzipped/de/dewiki-20140615-langlinks/dewiki-20140615-langlinks.sql",
+		"G:/WikiDumps/unzipped/fr/frwiki-20140626-langlinks/frwiki-20140626-langlinks.sql",
+		"G:/WikiDumps/unzipped/nl/nlwiki-20140630-langlinks/nlwiki-20140630-langlinks.sql"
+		};
 	
 	/**
 	 * Location of WikiILLs to be stored
 	 */
-	public static final String[] wikiLangLinksTransformed =  new String[] {"G:/wikiDataTransformed.txt"};
+	public static final String[] wikiLangLinksTransformed =  new String[] {
+		"G:/WikiMappingsOutput/Additional ILLs/Complete/ILLs_from_en.json",
+		"G:/WikiMappingsOutput/Additional ILLs/Complete/ILLs_from_de.json",
+		"G:/WikiMappingsOutput/Additional ILLs/Complete/ILLs_from_fr.json",
+		"G:/WikiMappingsOutput/Additional ILLs/Complete/ILLs_from_nl.json",
+		};
 	
 	/**
 	 * Location of WikiILLs to be stored
 	 */
-	public static final String[] wikiLangLinksFiltered =  new String[] {"G:/wikiDataFiltered.txt"};
+	public static final String[] wikiLangLinksFiltered =  new String[] {
+		"G:/WikiMappingsOutput/Additional ILLs/Filtered/ILLs_from_en.json",
+		"G:/WikiMappingsOutput/Additional ILLs/Filtered/ILLs_from_de.json",
+		"G:/WikiMappingsOutput/Additional ILLs/Filtered/ILLs_from_fr.json",
+		"G:/WikiMappingsOutput/Additional ILLs/Filtered/ILLs_from_nl.json",
+		};
 	
 	/**
 	 * Location of extraction process log

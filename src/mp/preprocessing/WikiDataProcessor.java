@@ -1,6 +1,7 @@
 package mp.preprocessing;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,6 +101,7 @@ public class WikiDataProcessor{
 			//release resources
 			ibxClasses = null;
 			statFactory.setInstanceNull();
+			System.gc();
 		}
 	}
 	
@@ -323,11 +325,17 @@ public class WikiDataProcessor{
 	 * @return
 	 */
 	private void filterAdditionalILLsAndDump(String readPath, String dumpWritePath) {
+		java.util.Date date= new java.util.Date();
 		HashMap<Long, SQLtoIllWrapper> result = new HashMap<Long, SQLtoIllWrapper>();
+		
 		//Retrieve the links
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Reading serialized ILLs for: "+readPath+" started at: " + new Timestamp(date.getTime()));
 		HashMap<Long, SQLtoIllWrapper> ills = retrieveDumpedPages(readPath, IllWrapperMapEntry.class);
 		
 		//Filter the links
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Filtering ILLs for started at: " + new Timestamp(date.getTime()));
 		for (Map.Entry<Long, SQLtoIllWrapper> ill : ills.entrySet()) {
 			SQLtoIllWrapper illObj = (SQLtoIllWrapper) ill.getValue();
 			//Language match
@@ -346,8 +354,11 @@ public class WikiDataProcessor{
 		
 		//Dump the result		
 		if (GlobalVariables.IS_DEBUG)
-			System.out.println("Dumping ILL filtering result...");
+			System.out.println("Dumping ILL filtering result started at: " + new Timestamp(date.getTime()));
 		dumpPages(result, dumpWritePath);
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Dumping fintered ILLs for: "+readPath+" finished at: " + new Timestamp(date.getTime()));
+		
 		//Release resources
 		result = null;
 		ills = null;
