@@ -21,6 +21,7 @@ import mp.exceptions.PageConversionException;
 import mp.global.GlobalVariables;
 import mp.io.FileIO;
 import mp.io.JsonIOManager;
+import mp.io.ObjectConverter;
 import mp.io.dataclasses.IllWrapperMapEntry;
 import mp.io.dataclasses.Page4GraphMapEntry;
 import mp.io.dataclasses.PageMapEntry;
@@ -39,6 +40,16 @@ import org.xml.sax.SAXException;
 public class WikiDataProcessor{
 	
 	public WikiDataProcessor() { }
+	
+	/**
+	 * Merges the additional ILLs and the basic page set by adding new ILLs into the corresponding {@link WikiPage4Graph} objects
+	 * @param graphData
+	 * @param IllData
+	 * @param mergedDataDump
+	 */
+	private void mergeAndDump4Graph(String graphData, String IllData, String mergedDataDump) {
+		
+	}
 	
 	/**
 	 * Reads additional ILLs from a serialized JSON, selects only a subset of languages, and dumps the result
@@ -111,8 +122,9 @@ public class WikiDataProcessor{
 	 * @param statisticsDumpPath Path to save statistics to 
 	 */
 	public void getStatsForGraph(String[] inputDataPaths, String[] statisticsDumpPath) {
+		ObjectConverter conv = new ObjectConverter();
 		for (int i=0;i<inputDataPaths.length;i++) {
-			HashMap<String, WikiPage4Graph> wikiData4Graph = retrieveDumpedPages(inputDataPaths[i], Page4GraphMapEntry.class);
+			HashMap<String, WikiPage4Graph> wikiData4Graph = conv.getAsHashMap(inputDataPaths[i], Page4GraphMapEntry.class);
 			getStatistics4Graph(wikiData4Graph, statisticsDumpPath[i]);
 			wikiData4Graph = null;
 			System.gc();
@@ -142,7 +154,8 @@ public class WikiDataProcessor{
 			}
 			
 			//Dump the resulting data
-			dumpPages(converter.getmPageSet(), transformedDataDumpPath[i]);
+			ObjectConverter conv = new ObjectConverter();
+			conv.dumpHashMap(converter.getmPageSet(), transformedDataDumpPath[i]);
 			//Release resources
 			converter = null;
 			System.gc();
@@ -158,7 +171,8 @@ public class WikiDataProcessor{
 		for (int i=0;i<rawDataPaths.length;i++){
 			extractAndDumpPages(rawDataPaths[i], transformedDataDumpPath[i], logPaths[i]);			
 			System.gc();
-			HashMap<String, WikiPage> wikiData = retrieveDumpedPages(transformedDataDumpPath[i], PageMapEntry.class);
+			ObjectConverter conv = new ObjectConverter();
+			HashMap<String, WikiPage> wikiData = conv.getAsHashMap(transformedDataDumpPath[i], PageMapEntry.class);
 			getStatistics(wikiData, statisticsDumpPath[i]);
 			System.gc();
 		}
@@ -235,36 +249,8 @@ public class WikiDataProcessor{
 		return wikiData;
 	}
 	
-	/**
-	 * Dumps set of {@link WikiPage}s to a given path
-	 * @param <K>
-	 * @param <V>
-	 * @param wikiData
-	 * @param dumpJson
-	 */
-	private <K, V> void dumpPages(HashMap<K, V> wikiData, String dumpJson) {
-		JsonIOManager jsonIOManager = new JsonIOManager();
-		jsonIOManager.writeToJson(wikiData, dumpJson);
-	}
 	
-	/**
-	 * Reads a set of {@link WikiPage}s
-	 * @param <K>
-	 * @param <V>
-	 * @param <T>
-	 * @param dumpJson
-	 * @return
-	 */
-	private <K, V, T> HashMap<K, V> retrieveDumpedPages(String dumpJson, Class<T> classOfPage) {
-		JsonIOManager jsonIOManager = new JsonIOManager();
-		HashMap<K, V> wikiData = new HashMap<K, V>();
-		try {
-			wikiData = jsonIOManager.readFromJson(dumpJson, classOfPage);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return wikiData;
-	}
+	
 	
 	/**
 	 * Generates statistics for a given set of {@link WikiPage}s
@@ -331,7 +317,8 @@ public class WikiDataProcessor{
 		//Retrieve the links
 		if (GlobalVariables.IS_DEBUG)
 			System.out.println("Reading serialized ILLs for: "+readPath+" started at: " + new Timestamp(date.getTime()));
-		HashMap<Long, SQLtoIllWrapper> ills = retrieveDumpedPages(readPath, IllWrapperMapEntry.class);
+		ObjectConverter conv = new ObjectConverter();
+		HashMap<Long, SQLtoIllWrapper> ills = conv.getAsHashMap(readPath, IllWrapperMapEntry.class);
 		
 		//Filter the links
 		if (GlobalVariables.IS_DEBUG)
@@ -355,7 +342,7 @@ public class WikiDataProcessor{
 		//Dump the result		
 		if (GlobalVariables.IS_DEBUG)
 			System.out.println("Dumping ILL filtering result started at: " + new Timestamp(date.getTime()));
-		dumpPages(result, dumpWritePath);
+		conv.dumpHashMap(result, dumpWritePath);
 		if (GlobalVariables.IS_DEBUG)
 			System.out.println("Dumping filtered ILLs for: "+readPath+" finished at: " + new Timestamp(date.getTime()));
 		
