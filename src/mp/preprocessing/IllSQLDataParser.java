@@ -62,10 +62,12 @@ public class IllSQLDataParser implements FileIONotifier {
 					try {
 						SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
 						wrapper.setId(Long.parseLong(oneEl[0]));
+						/*if (oneEl[1].equals(""))
+							oneEl[1] = "NAN";*/
 						wrapper.setLang(oneEl[1]);
-						if (oneEl[2].equals(""))
-							oneEl[2] = "NAN";
-						wrapper.setLang(oneEl[2]);
+						/*if (oneEl[2].equals(""))
+							oneEl[2] = "NAN";*/
+						wrapper.setTitle(oneEl[2]);
 						result.put(wrapper.getId(), wrapper);
 					} catch (Exception parsingException) {
 						parsingException.printStackTrace();
@@ -79,10 +81,12 @@ public class IllSQLDataParser implements FileIONotifier {
 					try {
 						SQLtoIllWrapper wrapper = new SQLtoIllWrapper();
 						wrapper.setId(Long.parseLong(oneEl[0]));
+						/*if (oneEl[1].equals(""))
+							oneEl[1] = "NAN";*/
 						wrapper.setLang(oneEl[1]);
-						if (oneEl[2].equals(""))
-							oneEl[2] = "NAN";
-						wrapper.setLang(oneEl[2]);
+						/*if (oneEl[2].equals(""))
+							oneEl[2] = "NAN";*/
+						wrapper.setTitle(oneEl[2]);
 						result.put(wrapper.getId(), wrapper);
 					} catch (Exception parsingException) {
 						parsingException.printStackTrace();
