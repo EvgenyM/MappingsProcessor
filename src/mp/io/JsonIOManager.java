@@ -1,8 +1,10 @@
 package mp.io;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -107,7 +109,7 @@ public class JsonIOManager extends FileIO {
 		HashMap<K, V> result = new HashMap<K, V>();
 		HashMap<K, V> readBuffer = new HashMap<K, V>();
 		
-		BufferedReader br = new BufferedReader(new FileReader(path));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF8"));
 		Gson gson = new Gson();
 		int cnt = 0;
 		long totalRead = 0;
@@ -159,7 +161,7 @@ public class JsonIOManager extends FileIO {
 	public <K, V, T> void readFromJson(String path, JsonIONotifier notifier, Class<T> classOfPage) throws IOException, PageConversionException {
 		HashMap<K, V> readBuffer = new HashMap<K, V>();
 		
-		BufferedReader br = new BufferedReader(new FileReader(path));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF8"));
 		Gson gson = new Gson();
 		int cnt = 0;
 		long totalRead = 0;

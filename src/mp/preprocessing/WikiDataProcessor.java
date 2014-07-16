@@ -21,6 +21,9 @@ import mp.io.FileIO;
 import mp.io.JsonIOManager;
 import mp.io.dataclasses.Page4GraphMapEntry;
 import mp.io.dataclasses.PageMapEntry;
+import mp.preprocessing.utils.Infobox4GraphFactory;
+import mp.preprocessing.utils.StatisticsFactory;
+import mp.preprocessing.utils.WikiDataExtractor;
 
 import org.xml.sax.SAXException;
 

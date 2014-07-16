@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
@@ -24,14 +25,12 @@ public class FileIO {
 	private static final int NUMBER_OF_STRINGS_PER_ITERATION = 10; 
 	
 	public static void readFileByChunks(String path, FileIONotifier caller) throws IOException {		
-		@SuppressWarnings("resource")
-		BufferedReader br = new BufferedReader(new FileReader(path));
+		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF8"));
 		String str = "";
 		long linesTotal = 0;
 		int readingIterationsPassed = 0;//number of iterations
 		int readingCounter = 0;
 		String[] readBuffer = new String[10];
-		
 		while ((str = br.readLine())!=null) {
 			readBuffer[readingCounter] = str;
 			readingCounter++;
