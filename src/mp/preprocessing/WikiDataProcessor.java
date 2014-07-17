@@ -49,7 +49,7 @@ public class WikiDataProcessor{
 	 * @param mergedDataDumps Paths to write the resulting datasets to
 	 */
 	public void mergeAndDump4GraphDatasets(String[] graphDataPaths, String[] IllDataPaths, String[] mergedDataDumps) {
-		for (int i=0;i<graphDataPaths.length;i++) {
+		for (int i=0;i<IllDataPaths.length;i++) {
 			mergeAndDump4Graph(graphDataPaths[i], IllDataPaths[i], mergedDataDumps[i]);
 		}
 	}
@@ -373,6 +373,7 @@ public class WikiDataProcessor{
 		if (GlobalVariables.IS_DEBUG)
 			System.out.println("Data appendance started.");
 		int numberOfAppended = 0;
+		int numberOfILLsTotal = 0;
 		for (WikiPage4Graph wikiPage : graphData.values()) {
 			try {
 				long pageId = wikiPage.getPageId();
@@ -383,6 +384,7 @@ public class WikiDataProcessor{
 					for (Map.Entry<String, String> newIll : illSet.getLangTitleCorrespondence().entrySet()) {
 						WikiLink link = new WikiLink(newIll.getKey(), newIll.getValue());
 						links.put(link.getSameAsPageTitle(), link);
+						numberOfILLsTotal++;
 					}				
 					wikiPage.setILLs(links);
 					numberOfAppended++;
@@ -393,7 +395,8 @@ public class WikiDataProcessor{
 		}
 		if (GlobalVariables.IS_DEBUG) {
 			System.out.println("Data appendance finished.");
-			System.out.println("Number of appended ILLS: " + numberOfAppended);
+			System.out.println("Number of appended pages: " + numberOfAppended);
+			System.out.println("Total number of ILLS: " + numberOfAppended);
 		}
 			
 		newIlls.clear();
