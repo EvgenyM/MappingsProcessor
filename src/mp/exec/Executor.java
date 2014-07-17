@@ -17,9 +17,10 @@ public class Executor {
 		proc.getStatsForGraph(GlobalVariables.dumpsToJson4Graph, GlobalVariables.StatsJson4g);
 		System.gc();
 		proc.getStatsForRawDumpedData(GlobalVariables.dumpsToJson, GlobalVariables.StatsJsonRaw);
-		System.gc();*/
+		System.gc();
 		proc.getAdditionalILLs(GlobalVariables.wikiLangLinks, GlobalVariables.wikiLangLinksTransformed);
 		System.gc();
-		proc.filterAdditionalILLs(GlobalVariables.wikiLangLinksTransformed, GlobalVariables.wikiLangLinksFiltered);
+		proc.filterAdditionalILLs(GlobalVariables.wikiLangLinksTransformed, GlobalVariables.wikiLangLinksFiltered);*/
+		proc.mergeAndDump4GraphDatasets(GlobalVariables.dumpsToJson4Graph, GlobalVariables.wikiLangLinksFiltered, GlobalVariables.dumpsToJson4GraphMergedWithILLs);
 	}
 }

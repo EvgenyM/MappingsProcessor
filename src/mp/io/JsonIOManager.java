@@ -25,8 +25,8 @@ import com.google.gson.Gson;
  */
 public class JsonIOManager extends FileIO {
 	
-	public static final int WRITE_BUFFER_CHUNK = 10000;
-	public static final int READ_BUFFER_CHUNK = 10000;
+	public static final int WRITE_BUFFER_CHUNK = 300000;
+	public static final int READ_BUFFER_CHUNK = 20000;
 	
 	public JsonIOManager() { 
 		

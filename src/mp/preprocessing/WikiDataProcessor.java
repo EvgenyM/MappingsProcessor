@@ -14,6 +14,7 @@ import mp.dataclasses.InfoboxSetStatistics;
 import mp.dataclasses.RawItemStatistics;
 import mp.dataclasses.SQLtoIllWrapper;
 import mp.dataclasses.WikiDataStatistics;
+import mp.dataclasses.WikiLink;
 import mp.dataclasses.WikiPage;
 import mp.dataclasses.WikiPage4Graph;
 import mp.exceptions.FileTooLargeException;
@@ -42,30 +43,15 @@ public class WikiDataProcessor{
 	public WikiDataProcessor() { }
 	
 	/**
-	 * Merges the additional ILLs and the basic page set by adding new ILLs into the corresponding {@link WikiPage4Graph} objects
-	 * @param graphData
-	 * @param IllData
-	 * @param mergedDataDump
+	 * For every in graphDataPaths Merges the additional ILLs and the basic page set by adding new ILLs into the corresponding {@link WikiPage4Graph} objects, and saves the results.
+	 * @param graphDataPaths Paths to Graph-ready serialized datasets
+	 * @param IllDataPaths Paths to serialized ILL datasets
+	 * @param mergedDataDumps Paths to write the resulting datasets to
 	 */
-	private void mergeAndDump4Graph(String graphDataPath, String IllDataPath, String mergedDataDump) {
-		ObjectConverter conv = new ObjectConverter();
-		HashMap<String, WikiPage4Graph> graphData = conv.getAsHashMap(graphDataPath, Page4GraphMapEntry.class);//Reading the graph data. Could cause out of memory exception.
-		HashMap<Long, SQLtoIllWrapper> newIlls = conv.getAsHashMap(IllDataPath, IllWrapperMapEntry.class);//Reading ILL data from the current language to other languages.
-		/*
-		 * For each article we find the ILLs which match it by the ID.
-		 */
-		for (WikiPage4Graph wikiPage : graphData.values()) {
-			try {
-				long pageId = wikiPage.getPageId();
-				SQLtoIllWrapper illSet = newIlls.get(pageId);
-				//Add ILLs to the WikiPage
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+	public void mergeAndDump4GraphDatasets(String[] graphDataPaths, String[] IllDataPaths, String[] mergedDataDumps) {
+		for (int i=0;i<graphDataPaths.length;i++) {
+			mergeAndDump4Graph(graphDataPaths[i], IllDataPaths[i], mergedDataDumps[i]);
 		}
-		
-		
 	}
 	
 	/**
@@ -368,6 +354,57 @@ public class WikiDataProcessor{
 		//Release resources
 		result = null;
 		ills = null;
+		System.gc();
+	}
+	
+	/**
+	 * Merges the additional ILLs and the basic page set by adding new ILLs into the corresponding {@link WikiPage4Graph} objects
+	 * @param graphData path to Graph-ready serialized dataset
+	 * @param IllData path to serialized ILL dataset
+	 * @param mergedDataDump Path to write the resulting dataset to
+	 */
+	private void mergeAndDump4Graph(String graphDataPath, String IllDataPath, String mergedDataDump) {
+		ObjectConverter conv = new ObjectConverter();
+		HashMap<String, WikiPage4Graph> graphData = conv.getAsHashMap(graphDataPath, Page4GraphMapEntry.class);//Reading the graph data. Could cause out of memory exception.
+		HashMap<Long, SQLtoIllWrapper> newIlls = conv.getAsHashMap(IllDataPath, IllWrapperMapEntry.class);//Reading ILL data from the current language to other languages.
+		/*
+		 * For each article we find the ILLs which match it by the ID.
+		 */
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Data appendance started.");
+		int numberOfAppended = 0;
+		for (WikiPage4Graph wikiPage : graphData.values()) {
+			try {
+				long pageId = wikiPage.getPageId();
+				SQLtoIllWrapper illSet = newIlls.get(pageId);
+				if (illSet != null) {
+					//Add ILLs to the WikiPage
+					HashMap<String, WikiLink> links = new HashMap<String, WikiLink>((int) (illSet.getLangTitleCorrespondence().size()/0.75+1));
+					for (Map.Entry<String, String> newIll : illSet.getLangTitleCorrespondence().entrySet()) {
+						WikiLink link = new WikiLink(newIll.getKey(), newIll.getValue());
+						links.put(link.getSameAsPageTitle(), link);
+					}				
+					wikiPage.setILLs(links);
+					numberOfAppended++;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		if (GlobalVariables.IS_DEBUG) {
+			System.out.println("Data appendance finished.");
+			System.out.println("Number of appended ILLS: " + numberOfAppended);
+		}
+			
+		newIlls.clear();
+		newIlls = null;
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Data Dumping started.");
+		conv.dumpHashMap(graphData, mergedDataDump);
+		if (GlobalVariables.IS_DEBUG)
+			System.out.println("Dumping finished.");
+		graphData.clear();
+		graphData = null;
 		System.gc();
 	}
 }
