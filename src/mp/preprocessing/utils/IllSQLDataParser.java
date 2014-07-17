@@ -102,4 +102,8 @@ public class IllSQLDataParser implements FileIONotifier {
 	public HashMap<Long, SQLtoIllWrapper> getLangLinkSet() {
 		return langLinkSet;
 	}
+	
+	public void clearLangLinks() {
+		langLinkSet.clear();
+	}
 }

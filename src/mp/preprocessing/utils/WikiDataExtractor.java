@@ -66,6 +66,7 @@ public class WikiDataExtractor {
 		JsonIOManager writer = new JsonIOManager();
 		writer.writeToJson(parsedLinks, path);
 		//release resources
+		parser.clearLangLinks();
 		parser = null;
 		writer = null;
 		System.gc();
