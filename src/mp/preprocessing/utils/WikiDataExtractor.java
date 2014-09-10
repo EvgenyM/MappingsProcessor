@@ -60,7 +60,8 @@ public class WikiDataExtractor {
 	 */
 	public void readAndDumpAdditionalILLs(String path) throws IOException {
 		IllSQLDataParser parser = IllSQLDataParser.getInstance();
-		FileIO.readFileByChunks(mPath, parser);
+		FileIO ioManager = new FileIO();
+		ioManager.readFileByChunks(mPath, parser);
 		//Dump the links
 		HashMap<Long, SQLtoIllWrapper> parsedLinks = parser.getLangLinkSet();
 		JsonIOManager writer = new JsonIOManager();
@@ -220,18 +221,6 @@ public class WikiDataExtractor {
 			int lastCompletePageEndingIndex = wikiDataAsString.lastIndexOf(pageEndTag) + pageEndTag.length();
 			remainderString = wikiDataAsString.substring(lastCompletePageEndingIndex, wikiDataAsString.length());
 			wikiDataAsString = wikiDataAsString.substring(0, lastCompletePageEndingIndex);
-			//FileIO.writeToFile(path, wikiDataAsString, true);
-			/*int reps = readingIterationsPassed/4;
-			if (readingIterationsPassed>0) {
-				//wikiDataAsString = Parser.completeChunk(wikiDataAsString, true);
-				FileIO.writeToFile(path+reps+".txt", wikiDataAsString, true);
-				//dumpPages(wikiDataAsString, path, false);
-			} else {
-				//wikiDataAsString = Parser.completeChunk(wikiDataAsString, false);
-				FileIO.writeToFile(path+reps+".txt", wikiDataAsString, false);
-				//dumpPages(wikiDataAsString, path, true);
-			}
-			readingIterationsPassed++;*/
 			
 			if (readingIterationsPassed>0) {
 				wikiDataAsString = Parser.completeChunk(wikiDataAsString, true);
@@ -283,13 +272,6 @@ public class WikiDataExtractor {
 			}
 			pagesPerIteration = null;
 			readingIterationsPassed ++;
-			//GCIters++;
-			
-			/*if (GCIters>=GC_ITERATIONS) {
-				System.gc();
-				log("GC\n", true);
-				GCIters = 0;
-			}*/
 		}
 		
 		fc.close();

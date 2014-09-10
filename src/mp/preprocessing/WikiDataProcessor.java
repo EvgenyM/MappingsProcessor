@@ -372,22 +372,25 @@ public class WikiDataProcessor{
 		 */
 		if (GlobalVariables.IS_DEBUG)
 			System.out.println("Data appendance started.");
-		int numberOfAppended = 0;
-		int numberOfILLsTotal = 0;
+		int numberOfPagesAppended = 0;
+		int numberOfILLsAppended = 0;
+		int numberOfILLsExisting = 0;
 		for (WikiPage4Graph wikiPage : graphData.values()) {
 			try {
 				long pageId = wikiPage.getPageId();
 				SQLtoIllWrapper illSet = newIlls.get(pageId);
 				if (illSet != null) {
 					//Add ILLs to the WikiPage
-					HashMap<String, WikiLink> links = new HashMap<String, WikiLink>((int) (illSet.getLangTitleCorrespondence().size()/0.75+1));
+					HashMap<String, WikiLink> lnksone = wikiPage.getILLs();
+					numberOfILLsExisting+= lnksone.size();
+					HashMap<String, WikiLink> links = new HashMap<String, WikiLink>((int) (illSet.getLangTitleCorrespondence().size()/0.75+1));//Existing ILLs are ignored!
 					for (Map.Entry<String, String> newIll : illSet.getLangTitleCorrespondence().entrySet()) {
 						WikiLink link = new WikiLink(newIll.getKey(), newIll.getValue());
 						links.put(link.getSameAsPageTitle(), link);
-						numberOfILLsTotal++;
+						numberOfILLsAppended++;
 					}				
 					wikiPage.setILLs(links);
-					numberOfAppended++;
+					numberOfPagesAppended++;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -395,8 +398,9 @@ public class WikiDataProcessor{
 		}
 		if (GlobalVariables.IS_DEBUG) {
 			System.out.println("Data appendance finished.");
-			System.out.println("Number of appended pages: " + numberOfAppended);
-			System.out.println("Total number of ILLS: " + numberOfAppended);
+			System.out.println("Number of appended pages: " + numberOfPagesAppended);
+			System.out.println("Total number of ILLS: " + numberOfILLsAppended);
+			System.out.println("Number of ILLS rewritten: " + numberOfILLsExisting);
 		}
 			
 		newIlls.clear();

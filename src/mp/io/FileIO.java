@@ -24,7 +24,7 @@ public class FileIO {
 	
 	private static final int NUMBER_OF_STRINGS_PER_ITERATION = 10; 
 	
-	public static void readFileByChunks(String path, FileIONotifier caller) throws IOException {		
+	public void readFileByChunks(String path, FileIONotifier caller) throws IOException {		
 		BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8"));
 		String str = "";
 		long linesTotal = 0;

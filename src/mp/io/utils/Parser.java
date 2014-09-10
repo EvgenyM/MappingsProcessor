@@ -66,6 +66,63 @@ public class Parser {
 	}
 	
 	/**
+	 * Returns the data inside a given pair of strings
+	 * @param data Raw data as String
+	 * @param beginTag Opening string
+	 * @param endTag Closing string
+	 * @param keepLevel Whether the same level should be kept (useful for complex "superposition" cases)
+	 * @return
+	 */
+	public static List<String> getContentsNoOffset(String data, String beginString, String endString, boolean keepLevel) {
+		int indexOfBeginning = 0;
+		int filelength = data.length();
+		List<String> result = new ArrayList<String>();
+		
+		boolean chunkEndExceeded = false;
+		do {
+			int indexPos = data.indexOf(beginString, indexOfBeginning);
+			int initialPosition = 0;
+			if (indexPos==-1) {
+				chunkEndExceeded = true;
+				break;
+			} else {
+				initialPosition = indexPos + beginString.length();
+			}
+				
+			int endPosition = initialPosition;
+			int numberOfOccurences = 1;
+						
+			while (numberOfOccurences>0 && endPosition < filelength-endString.length()) {
+				String s1 = data.substring(endPosition, endPosition+endString.length());
+				if (s1.equals(endString))
+					numberOfOccurences--;
+				if (keepLevel) {
+					if (s1.equals(beginString))
+						numberOfOccurences++;
+				}
+				
+				endPosition++;
+				
+				if (endPosition>filelength-endString.length()) {
+					chunkEndExceeded = true;
+					break;
+				}
+			}
+			
+			if (!chunkEndExceeded) {
+				/*if (numberOfOccurences==0)
+					endPosition--;//Weird correction*/
+				String resultingChunk = data.substring(initialPosition, endPosition).trim();
+				result.add(resultingChunk);				
+				indexOfBeginning = endPosition+1;
+				System.out.println(resultingChunk);
+			}				
+		} while (indexOfBeginning < filelength && !chunkEndExceeded);
+		data = null;
+		return result;
+	}
+	
+	/**
 	 * Returns the data inside a particular tag
 	 * @param data Raw data as String
 	 * @param beginTag Opening tag part, e.g. {@code <page} or {@code <title}
@@ -97,7 +154,7 @@ public class Parser {
 					numberOfOccurences--;
 				endPosition++;
 				
-				if (endPosition>=filelength-endTag.length()) {
+				if (endPosition>filelength-endTag.length()) {
 					chunkEndExceeded = true;
 					break;
 				}
