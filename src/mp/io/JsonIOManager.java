@@ -2,21 +2,18 @@ package mp.io;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ArrayBlockingQueue;
+
+import com.google.gson.Gson;
 
 import mp.dataclasses.WikiPage;
 import mp.exceptions.PageConversionException;
 import mp.global.GlobalVariables;
-import mp.io.dataclasses.PageMapEntry;
-
-import com.google.gson.Gson;
 
 /**
  * Enables buffered String-to-JSON and JSON-to-String IO operations
@@ -76,13 +73,13 @@ public class JsonIOManager extends FileIO {
 		if (isFirstChunk) {
 			appendToFile = false;//file just started
 		}
-		HashMap<K, V> buffdata = new HashMap<K, V>();
+		HashMap<String, WikiPage> buffdata = new HashMap<String, WikiPage>();
 		for (Map.Entry<K,V> page : wikiData.entrySet()) {
 			if (page!=null) {
-				buffdata.put(page.getKey(), page.getValue());
+				buffdata.put((String)page.getKey(), (WikiPage)page.getValue());
 				dumpIter++;
 				if (dumpIter >= WRITE_BUFFER_CHUNK) {
-					writeJson(buffdata, path, appendToFile);
+					writeJsonWD(buffdata, path, appendToFile);
 					if (!appendToFile) {
 						appendToFile = true;
 					}
@@ -92,7 +89,7 @@ public class JsonIOManager extends FileIO {
 			}
 		}
 		if (dumpIter>0) {
-			writeJson(buffdata, path, appendToFile);
+			writeJsonWD(buffdata, path, appendToFile);
 		}
 	}
 	
@@ -200,14 +197,17 @@ public class JsonIOManager extends FileIO {
 			System.out.println("Json parsing done.");
 	}
 	
-	private <K, V> void writeJson(HashMap<K, V> data, String path, boolean append) {
+	private void writeJsonWD(HashMap<String, WikiPage> data, String path, boolean append) {
 		boolean shouldAppend = append;
-		Gson gson = new Gson();	
+		//Gson gson = new Gson();	
 		List<String> result = new ArrayList<String>();// "";
-		int i=0;
-		for (Map.Entry<K,V> page : data.entrySet()) {
-			result.add(gson.toJson(page)+"\n");
-			i++;
+		Gson gson = new Gson();
+		for (Map.Entry<String, WikiPage> page : data.entrySet()) {
+			try {
+				result.add(gson.toJson(page.getValue())+"\n");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
 		}
 		StringBuilder builder = new StringBuilder();
 		for (String value : result) {
@@ -216,5 +216,28 @@ public class JsonIOManager extends FileIO {
 		String text = builder.toString();
 			
 		writeToFile(path, text, shouldAppend);
+		System.gc();
+	}
+	
+	private <K, V> void writeJson(HashMap<K, V> data, String path, boolean append) {
+		boolean shouldAppend = append;
+		//Gson gson = new Gson();	
+		List<String> result = new ArrayList<String>();// "";
+		Gson gson = new Gson();
+		for (Map.Entry<K,V> page : data.entrySet()) {
+			try {
+				result.add(gson.toJson(page)+"\n");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}			
+		}
+		StringBuilder builder = new StringBuilder();
+		for (String value : result) {
+		    builder.append(value);
+		}
+		String text = builder.toString();
+			
+		writeToFile(path, text, shouldAppend);
+		System.gc();
 	}
 }

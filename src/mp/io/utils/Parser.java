@@ -161,10 +161,13 @@ public class Parser {
 			}
 			
 			if (!chunkEndExceeded) {
-				String resultingChunk = data.substring(initialPosition, endPosition-1).trim();
-				result.add(resultingChunk);				
-				indexOfBeginning = endPosition+1;
-				//System.out.println(indexOfBeginning);
+				try {
+					String resultingChunk = data.substring(initialPosition, endPosition-1).trim();
+					result.add(resultingChunk);		
+				} catch (Exception e) {
+					
+				}
+				indexOfBeginning = endPosition+1;		
 			}				
 		} while (indexOfBeginning < filelength && !chunkEndExceeded);
 		data = null;

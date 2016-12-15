@@ -11,34 +11,39 @@ import java.util.List;
 public class WikiPage extends WikiPageBase{
 
 	private String pageTitle;
-	private Infobox infobox;
+	//private Infobox infobox;
 	private long pageId;
-	private HashMap<String, WikiLink> ILLs;
+	//private HashMap<String, WikiLink> ILLs;
+	private String pageContent;
 	
 	public WikiPage(Infobox infobox, HashMap<String, WikiLink> ILLs) {
-		this.infobox = infobox;
-		this.ILLs = ILLs;
+		//this.infobox = infobox;
+		//this.ILLs = ILLs;
 	}
 	
 	public WikiPage(Infobox infobox) {
-		this.infobox = infobox;
-		this.ILLs = new HashMap<String, WikiLink>();
+		//this.infobox = infobox;
+		//this.ILLs = new HashMap<String, WikiLink>();
+	}
+	
+	public WikiPage() {
+		
 	}
 	
 	public Infobox getInfobox() {
-		return infobox;
+		return null;//infobox;
 	}
 	
 	public void setInfobox(Infobox infobox) {
-		this.infobox = infobox;
+		//this.infobox = infobox;
 	}
 	
 	public HashMap<String, WikiLink> getILLs() {
-		return ILLs;
+		return null;//ILLs;
 	}
 	
 	public void setILLs(HashMap<String, WikiLink> iLLs) {
-		ILLs = iLLs;
+		//ILLs = iLLs;
 	}
 
 	public String getPageTitle() {
@@ -78,5 +83,13 @@ public class WikiPage extends WikiPageBase{
 
 	public void setPageId(long pageId) {
 		this.pageId = pageId;
+	}
+
+	public String getPageContent() {
+		return pageContent;
+	}
+
+	public void setPageContent(String pageContent) {
+		this.pageContent = pageContent;
 	}
 }

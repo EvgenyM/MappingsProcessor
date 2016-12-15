@@ -23,6 +23,7 @@ import mp.io.JsonIOManager;
 import mp.io.utils.Converter;
 import mp.io.utils.Parser;
 
+import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.SAXException;
 
 /**
@@ -36,15 +37,17 @@ public class WikiDataExtractor {
 	private static final int PAGE_SET_INITIAL_CAPACITY = 5000;
 	
 	@SuppressWarnings("unused")
-	private static final String pageBeginTag = "<page";
-	private static final String pageEndTag = "</page>";
+	private static final String pageBeginTag = "<doc";
+	private static final String pageEndTag = "</doc>";
 	
 	private String mPath;
 	private String logPath;
 	private boolean ignoreUnnamedAttributes;
 	private boolean namesToLowerCase;
 	
-	public static final int chunkSize = 1024*1024*10;//10 MBytes
+	public static final int chunkSize = 1024*1024*100;//100 MBytes
+	
+	public static final int PAGES_PER_FILE = 10000;
 	
 	public WikiDataExtractor(String path, String logPath) {
 		this.mPath = path;
@@ -200,6 +203,9 @@ public class WikiDataExtractor {
 		long attributesTotal = 0;
 		long attributesNormalTotal = 0;
 		
+		int pageCount = 0;
+		int fileCount = 0;
+		
 		//int GCIters = 0;
 		while((len = fc.read(bb)) != -1) {
 			bytesTotal +=len;
@@ -229,11 +235,14 @@ public class WikiDataExtractor {
 			}
 			
 			HashMap<String, WikiPage> pagesPerIteration = Converter.extractPages(wikiDataAsString, ignoreUnnamedAttributes, isNamesToLowerCase());
-						
-			if (readingIterationsPassed>0) {
-				dumpPages(pagesPerIteration, path, false);
+			
+			pageCount += pagesPerIteration.values().size();			
+			if (readingIterationsPassed > 0 && pageCount < PAGES_PER_FILE) {
+				dumpPages(pagesPerIteration, getPathWithPart(path, fileCount), false);
 			} else {
-				dumpPages(pagesPerIteration, path, true);
+				dumpPages(pagesPerIteration, getPathWithPart(path, fileCount), true);
+				fileCount++;
+				pageCount = 0;
 			}
 			
 			if (GlobalVariables.IS_DEBUG) {
@@ -283,6 +292,11 @@ public class WikiDataExtractor {
 			System.out.println("Reading complete. Infoboxes found: " + infoboxesTotal + ". Attributes total: " + attributesTotal + ". attributesNormalTotal: " + attributesNormalTotal + ".");
 			log("Reading complete. Infoboxes found: " + infoboxesTotal + ". Attributes total: " + attributesTotal + ". attributesNormalTotal: " + attributesNormalTotal + "."+"\n", true);
 		}
+	}
+	
+	private String getPathWithPart(String path, int num) {
+		String[] pathParts = StringUtils.split(path ,".");
+		return pathParts[0] + "_part"+num+"." + pathParts[1];
 	}
 	
 	private static void dumpPages(HashMap<String, WikiPage> wikiData, String path, boolean isFirstChunk) {

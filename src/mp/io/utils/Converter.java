@@ -2,14 +2,10 @@ package mp.io.utils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
-import mp.dataclasses.Infobox;
 import mp.dataclasses.InfoboxAttribute;
-import mp.dataclasses.WikiLink;
 import mp.dataclasses.WikiPage;
-import mp.global.GlobalVariables;
-import mp.io.FileIO;
-import mp.io.dataclasses.InfoboxExtractionObject;
 
 /**
  * Implements a set of methods for generating wrapper objects out of parsed data
@@ -18,12 +14,13 @@ import mp.io.dataclasses.InfoboxExtractionObject;
  */
 public class Converter {
 
-	private static final String pageBeginTag = "<page";
-	private static final String pageEndTag = "</page>";
+	private static final String pageBeginTag = "<doc";
+	private static final String pageEndTag = "</doc>";
 	private static final String titleBeginTag = "<title";
 	private static final String titleEndTag = "</title>";
 	private static final String idBeginTag = "<id";
 	private static final String idEndTag = "</id>";
+	private static final String textStartTag =">";
 	public static final String dumpPath = "D:/1M Mannheim/Master Thesis/WikiData/enwiki/dump.txt";
 	
 	/**
@@ -38,9 +35,8 @@ public class Converter {
 		for (String str: pageAsString) {
 			WikiPage page = getWikiPage(str, ignoreUnnamedAttributes, isNamesToLowerCase);
 			if (isPageConsistent(page)) 
-				pagesRetrieved.put(page.getPageTitle(), page);
+				pagesRetrieved.put(Long.toString(page.getPageId()), page);
 		}
-		pageAsString = null;
 		return pagesRetrieved;
 	}
 	
@@ -52,9 +48,13 @@ public class Converter {
 	private static boolean isPageConsistent(WikiPage page) {
 		boolean isConsistent = false;
 		
+		if (page.getPageContent().length() > 15) {
+			isConsistent = true;
+		}
+		
 		//if (page.getILLs()!=null) {
 			//if (page.getILLs().size()>0) {
-				if (page.getInfobox()!=null) {
+				/*if (page.getInfobox()!=null) {
 					if (page.getInfobox().getAttributes()!= null) {
 						if (page.getInfobox().getAttributes().size()>0) {
 							for (InfoboxAttribute att:page.getInfobox().getAttributes()) {
@@ -66,7 +66,7 @@ public class Converter {
 							}
 						}
 					}						
-				}
+				}*/
 			//}
 		//}
 		
@@ -81,53 +81,18 @@ public class Converter {
 	 * @return
 	 */
 	private static WikiPage getWikiPage(String pageData, boolean ignoreUnnamedAttributes, boolean isNamesToLowerCase) {
-		
-		long pageId = -1;				
-		//PAGE ID
+
+		long pageId = (long)(new Random().nextDouble()*10000000000d);				
 		try {
-			pageId = Long.parseLong(Parser.getContents(pageData, idBeginTag, idEndTag).get(0));
-		} catch (NumberFormatException ex) { 
+			pageId = Long.parseLong(Parser.getContents(pageData, "id=", "\"").get(0));
+		} catch (Exception ex) { 
 			ex.printStackTrace();
 		}
-		
-		//PAGE TITLE
-		String pageTitle = Parser.getContents(pageData, titleBeginTag, titleEndTag).get(0);
-		
-		//INFOBOX
-		InfoboxExtractionObject extractedChunk = Parser.extractInfboxesFromUnstructuredText(pageData, ignoreUnnamedAttributes, isNamesToLowerCase);
-		Infobox box = null;
-		//take the 1st (the only in this case) infobox
-		for (Infobox mbox : extractedChunk.getInfoBoxes()) {
-			box = mbox;
-			break;
-		}
-		
-		//ILLs
-		HashMap<String, WikiLink> ILLSet = Parser.getILLs(pageData, true);
-		
-		/*if (GlobalVariables.IS_DEBUG) {
-			FileIO.writeToFile(dumpPath, "Page: *" + pageTitle+"*"+"\n", true);
-			System.out.println("Page: *" + pageTitle+"*");
-				
-			for (WikiLink lnk : ILLSet.values()) {
-				String strOut = lnk.getLangCode()+":"+lnk.getSameAsPageTitle()+ "#" + lnk.getSubCategory() + "|FEATURED: "+lnk.getFeaturedLangCode()+"|GOOD: "+lnk.getGoodLangCode();
-				FileIO.writeToFile(dumpPath, strOut+"\n", true);
-				System.out.println(strOut);
-			}
-			System.out.println();
-			FileIO.writeToFile(dumpPath, "\n", true);
-		}*/
-		
-		WikiPage page = new WikiPage(box, ILLSet);	
-		page.setPageTitle(pageTitle);
+		String content = pageData.substring(pageData.indexOf(">") + 1);
+		WikiPage page = new WikiPage();
 		page.setPageId(pageId);
-
-		extractedChunk = null;
+		page.setPageContent(content);
 		pageData = null;
-		ILLSet = null;
-		pageTitle = null;
-		box = null;
-		
 		return page;
 	}
 }

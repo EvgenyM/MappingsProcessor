@@ -187,7 +187,7 @@ public class WikiDataProcessor{
 	 * @param dumpLocation
 	 * @param logpath
 	 */
-	private void extractAndDumpPages(String pagesLocation, String dumpLocation, String logpath) {
+	public void extractAndDumpPages(String pagesLocation, String dumpLocation, String logpath) {
 		System.out.println("Started reading file: "+pagesLocation);
 		WikiDataExtractor extractor = new WikiDataExtractor(pagesLocation, logpath);
 		extractor.setIgnoreUnnamedAttributes(true);//Strict mode since unnamed attributes cause ambiguity
@@ -260,7 +260,7 @@ public class WikiDataProcessor{
 	 * @param wikiData
 	 * @param dumpStats
 	 */
-	private void getStatistics(HashMap<String, WikiPage> wikiData, String dumpStats) {
+	public void getStatistics(HashMap<String, WikiPage> wikiData, String dumpStats) {
 		InfoboxSetStatistics analyzer = new InfoboxSetStatistics(wikiData);
 		HashMap<String, List<Infobox>> stats = analyzer.getStatistics();
 		System.out.println("Number of classes: "+analyzer.getNumberOfClasses());

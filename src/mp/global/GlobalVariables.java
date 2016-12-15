@@ -48,26 +48,26 @@ public class GlobalVariables {
 	 * Locations of WikiData files to be processed
 	 */
 	public static final String[] pageSetsToAnalyze = new String[] {
-		"J:/WikiDumps/unzipped/en/enwiki-20140614-pages-articles/enwiki_articles.xml",
+		"D:/wiki/unzipped/af.xml"/*,
 		"J:/WikiDumps/unzipped/de/dewiki-20140615-pages-articles/dewiki_articles.xml",
 		"J:/WikiDumps/unzipped/fr/frwiki-20140626-pages-articles/frwiki_articles.xml",
 		"J:/WikiDumps/unzipped/nl/nlwiki-20140630-pages-articles/nlwiki_articles.xml",
 		"J:/WikiDumps/unzipped/es/eswiki-20140613-pages-articles/eswiki_articles.xml",
 		"J:/WikiDumps/unzipped/ru/ruwiki-20140617-pages-articles/ruwiki_articles.xml",
-		"J:/WikiDumps/unzipped/it/itwiki-20140612-pages-articles/itwiki_articles.xml"
+		"J:/WikiDumps/unzipped/it/itwiki-20140612-pages-articles/itwiki_articles.xml"*/
 		};
 	
 	/**
 	 * Locations of processed dumps of WikiData
 	 */
 	public static final String[] dumpsToJson = new String[] {
-		"J:/WikiMappingsOutput/Raw extracted data/Wiki EN/withIDs/EN_PagesAsJson.txt",
+		"D:/wiki/json/AF_PagesAsJson.txt"/*,
 		"J:/WikiMappingsOutput/Raw extracted data/Wiki DE/withIDs/DE_PagesAsJson.txt",
 		"J:/WikiMappingsOutput/Raw extracted data/Wiki FR/withIDs/FR_PagesAsJson.txt",
 		"J:/WikiMappingsOutput/Raw extracted data/Wiki NL/withIDs/NL_PagesAsJson.txt",
 		"J:/WikiMappingsOutput/Raw extracted data/Wiki ES/withIDs/ES_PagesAsJson.txt",
 		"J:/WikiMappingsOutput/Raw extracted data/Wiki RU/withIDs/RU_PagesAsJson.txt",
-		"J:/WikiMappingsOutput/Raw extracted data/Wiki IT/withIDs/IT_PagesAsJson.txt"
+		"J:/WikiMappingsOutput/Raw extracted data/Wiki IT/withIDs/IT_PagesAsJson.txt"*/
 		};
 	
 	/**
@@ -100,13 +100,13 @@ public class GlobalVariables {
 	 * Locations of statistics for the WikiData
 	 */
 	public static final String[] StatsJson = new String[] {
-		"J:/WikiMappingsOutput/Statistics/EN_Stats.csv",
+		"D:/wiki/json/AF_Stats.csv"/*,
 		"J:/WikiMappingsOutput/Statistics/DE_Stats.csv",
 		"J:/WikiMappingsOutput/Statistics/FR_Stats.csv",
 		"J:/WikiMappingsOutput/Statistics/NL_Stats.csv",
 		"J:/WikiMappingsOutput/Statistics/ES_Stats.csv",
 		"J:/WikiMappingsOutput/Statistics/RU_Stats.csv",
-		"J:/WikiMappingsOutput/Statistics/IT_Stats.csv"
+		"J:/WikiMappingsOutput/Statistics/IT_Stats.csv"*/
 		};
 	
 	/**
@@ -139,13 +139,13 @@ public class GlobalVariables {
 	 * Locations for logging the system events for each dataset
 	 */
 	public static final String[] Logs = new String[] {
-		"J:/WikiMappingsOutput/Logs/EN_log.txt",
+		"D:/wiki/logs/AF_log.txt"/*,
 		"J:/WikiMappingsOutput/Logs/DE_log.txt",
 		"J:/WikiMappingsOutput/Logs/FR_log.txt",
 		"J:/WikiMappingsOutput/Logs/NL_log.txt",
 		"J:/WikiMappingsOutput/Logs/ES_log.txt",
 		"J:/WikiMappingsOutput/Logs/RU_log.txt",
-		"J:/WikiMappingsOutput/Logs/IT_log.txt"
+		"J:/WikiMappingsOutput/Logs/IT_log.txt"*/
 		};	
 	
 	/**
