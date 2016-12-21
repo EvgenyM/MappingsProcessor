@@ -3,18 +3,30 @@ package mp.dataclasses;
 import java.util.HashMap;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Wrapper class for a page object.
  * @author Evgeny Mitichkin
  *
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class WikiPage extends WikiPageBase{
 
+	@JsonProperty("pageTitle")
 	private String pageTitle;
-	//private Infobox infobox;
+	
+	@JsonProperty("pageId")
 	private long pageId;
-	//private HashMap<String, WikiLink> ILLs;
+	
+	@JsonProperty("pageContent")
 	private String pageContent;
+	
+	//private Infobox infobox;
+	//private HashMap<String, WikiLink> ILLs;
 	
 	public WikiPage(Infobox infobox, HashMap<String, WikiLink> ILLs) {
 		//this.infobox = infobox;

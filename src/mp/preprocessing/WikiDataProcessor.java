@@ -170,9 +170,9 @@ public class WikiDataProcessor{
 	 * Reads the file chunk by chunk, extracts Interlingual links, Infoboxes with their attributes,
 	 * and generates statistics for retrieved dataset.
 	 */
-	public void makeETL(String[] rawDataPaths, String[] transformedDataDumpPath, String[] statisticsDumpPath, String[] logPaths) {
+	public void makeETL(String[] rawDataPaths, String[] transformedDataDumpPath, String[] statisticsDumpPath, String[] logPaths, String[] langCodes) {
 		for (int i=0;i<rawDataPaths.length;i++){
-			extractAndDumpPages(rawDataPaths[i], transformedDataDumpPath[i], logPaths[i]);			
+			extractAndDumpPages(rawDataPaths[i], transformedDataDumpPath[i], logPaths[i], langCodes[i]);			
 			System.gc();
 			ObjectConverter conv = new ObjectConverter();
 			HashMap<String, WikiPage> wikiData = conv.getAsHashMap(transformedDataDumpPath[i], PageMapEntry.class);
@@ -187,14 +187,14 @@ public class WikiDataProcessor{
 	 * @param dumpLocation
 	 * @param logpath
 	 */
-	public void extractAndDumpPages(String pagesLocation, String dumpLocation, String logpath) {
+	public void extractAndDumpPages(String pagesLocation, String dumpLocation, String logpath, String langCode) {
 		System.out.println("Started reading file: "+pagesLocation);
 		WikiDataExtractor extractor = new WikiDataExtractor(pagesLocation, logpath);
 		extractor.setIgnoreUnnamedAttributes(true);//Strict mode since unnamed attributes cause ambiguity
 		extractor.setNamesToLowerCase(true);
 		
 		try {
-			extractor.readAndDumpWikidata(dumpLocation);
+			extractor.readAndDumpWikidata(dumpLocation, langCode);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (FileTooLargeException e) {

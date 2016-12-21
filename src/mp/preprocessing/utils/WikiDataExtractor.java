@@ -20,6 +20,7 @@ import mp.exceptions.FileTooLargeException;
 import mp.global.GlobalVariables;
 import mp.io.FileIO;
 import mp.io.JsonIOManager;
+import mp.io.json.FileIOManager;
 import mp.io.utils.Converter;
 import mp.io.utils.Parser;
 
@@ -180,6 +181,11 @@ public class WikiDataExtractor {
 		return result;
 	}
 	
+	public void readAndDumpWikidata(String rootFolder, String langCode) throws IOException, FileTooLargeException, ParserConfigurationException, SAXException {
+		String jsonPath = FileIOManager.createDirectory(rootFolder, langCode);
+		readAndDumpWikidata(jsonPath + "/" + langCode + ".json");
+	}
+	
 	/**
 	 * Reads the wikidata and returns a {@link HashSet} of {@link Infobox} wrapped objects with their attributes and properties. Should be called 
 	 * in case of large datasets (greater than the RAM size).
@@ -189,7 +195,7 @@ public class WikiDataExtractor {
 	 * @throws SAXException 
 	 * @throws ParserConfigurationException 
 	 */
-	public void readAndDumpWikidata(String path) throws IOException, FileTooLargeException, ParserConfigurationException, SAXException  {		
+	private void readAndDumpWikidata(String path) throws IOException, FileTooLargeException, ParserConfigurationException, SAXException  {		
 		FileInputStream fis = new FileInputStream(mPath);
 		FileChannel fc = fis.getChannel();
 		ByteBuffer bb = ByteBuffer.allocate(chunkSize);

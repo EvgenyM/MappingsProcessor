@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import mp.dataclasses.LinkedHashSetMultimap;
 import mp.dataclasses.Multimap;
 import mp.io.utils.PropertyUtils;
@@ -27,40 +29,10 @@ public class Executor {
 	}
 	
 	public static void main(String[] args) {
-		
-		WikiDataProcessor proc = new WikiDataProcessor();
-		
+		WikiDataProcessor proc = new WikiDataProcessor();		
 		for (Map.Entry<String, Collection<String>> lang : paths.asMap().entrySet()) {
 			List<String> langPaths = new ArrayList<String>(lang.getValue());
-			//System.out.println(lang.getKey());
-			proc.extractAndDumpPages(langPaths.get(0),langPaths.get(1),langPaths.get(2));			
-			/*ObjectConverter conv = new ObjectConverter();
-			HashMap<String, WikiPage> wikiData = conv.getAsHashMap(langPaths.get(1), PageMapEntry.class);
-			proc.getStatistics(wikiData, langPaths.get(2));*/
+			proc.extractAndDumpPages(langPaths.get(0),langPaths.get(1),langPaths.get(2), StringUtils.lowerCase(lang.getKey()));
 		}
-		
-		
-		
-		
-		
-		
-		
-		//System.gc();
-		//proc.compress4Graph(GlobalVariables.dumpsToJson, GlobalVariables.dumpsToJson4Graph, ILLTypes.NoFilter);
-		//System.gc();
-		//proc.getStatsForGraph(GlobalVariables.dumpsToJson4Graph, GlobalVariables.StatsJson4g);
-		//System.gc();
-		//proc.getStatsForRawDumpedData(GlobalVariables.dumpsToJson, GlobalVariables.StatsJsonRaw);
-		//System.gc();
-		//proc.getAdditionalILLs(GlobalVariables.wikiLangLinks, GlobalVariables.wikiLangLinksTransformed);
-		//System.gc();
-		//proc.filterAdditionalILLs(GlobalVariables.wikiLangLinksTransformed, GlobalVariables.wikiLangLinksFiltered);
-		//proc.mergeAndDump4GraphDatasets(GlobalVariables.dumpsToJson4Graph, GlobalVariables.wikiLangLinksFiltered, GlobalVariables.dumpsToJson4GraphMergedWithILLs);
-		//System.gc();
-		
-		
-		
-		///MappingsWikiProcessor mwp = new MappingsWikiProcessor();
-		//mwp.buildGoldStandard();
 	}
 }

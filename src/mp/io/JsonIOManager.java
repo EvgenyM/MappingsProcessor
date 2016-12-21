@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import mp.dataclasses.WikiPage;
 import mp.exceptions.PageConversionException;
 import mp.global.GlobalVariables;
+import mp.io.json.JSONObjectMapper;
 
 /**
  * Enables buffered String-to-JSON and JSON-to-String IO operations
@@ -199,45 +200,31 @@ public class JsonIOManager extends FileIO {
 	
 	private void writeJsonWD(HashMap<String, WikiPage> data, String path, boolean append) {
 		boolean shouldAppend = append;
-		//Gson gson = new Gson();	
-		List<String> result = new ArrayList<String>();// "";
-		Gson gson = new Gson();
+		StringBuilder builder = new StringBuilder("");
 		for (Map.Entry<String, WikiPage> page : data.entrySet()) {
 			try {
-				result.add(gson.toJson(page.getValue())+"\n");
+				builder.append(JSONObjectMapper.asJsonString(page.getValue()))
+					   .append("\n");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}			
-		}
-		StringBuilder builder = new StringBuilder();
-		for (String value : result) {
-		    builder.append(value);
-		}
-		String text = builder.toString();
-			
-		writeToFile(path, text, shouldAppend);
+		}			
+		writeToFile(path, builder.toString(), shouldAppend);
 		System.gc();
 	}
 	
 	private <K, V> void writeJson(HashMap<K, V> data, String path, boolean append) {
 		boolean shouldAppend = append;
-		//Gson gson = new Gson();	
-		List<String> result = new ArrayList<String>();// "";
-		Gson gson = new Gson();
+		StringBuilder builder = new StringBuilder();
 		for (Map.Entry<K,V> page : data.entrySet()) {
 			try {
-				result.add(gson.toJson(page)+"\n");
+				builder.append(JSONObjectMapper.asJsonString(page))
+					   .append("\n");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}			
-		}
-		StringBuilder builder = new StringBuilder();
-		for (String value : result) {
-		    builder.append(value);
-		}
-		String text = builder.toString();
-			
-		writeToFile(path, text, shouldAppend);
+		}			
+		writeToFile(path, builder.toString(), shouldAppend);
 		System.gc();
 	}
 }
